@@ -3,7 +3,7 @@ function StatusModel( params ) {
     self.nodes = ko.observable('0');
     self.albums = ko.observable('0');
 
-    $.getJSON( "/cds/status", function( data ) {
+    $.getJSON( API_URI+"status", function( data ) {
         self.nodes( data.nodes );
         self.albums( data.albums );
     });

@@ -60,6 +60,9 @@ Server::Server(std::shared_ptr< http::Server< http::HttpServer > > web_server, /
     /* path to the web gui files */
     web_server->bind( http::mod::Match<>( "*" ),
                       http::mod::File( docroot ),
-                      http::mod::Http() );
+                      http::mod::Http(), http::mod::Exec([this](http::Request& request, http::Response& response ) -> http::http_status {
+                          response.parameter( "Access-Control-Allow-Origin", "*" );
+                          return http::http_status::OK;
+                      }));
 }
 }//namespace www

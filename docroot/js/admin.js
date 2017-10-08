@@ -5,10 +5,11 @@ function cdsModel() {
     self.media = ko.observableArray();
 
     $.ajax({
-    url: "http://192.168.0.1:9001/cds/config",
+    url: "http://192.168.0.1:9001/config",
     method: "GET",
     headers: {"Accept": "application/json; odata=verbose"},
       success: function(data) {
+          console.log('data load:' + data);
           self.httpIp( data.httpIp );
           self.httpPort( data.httpPort );
           ko.utils.arrayPushAll(self.media, data.media);

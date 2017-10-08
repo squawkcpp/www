@@ -1,12 +1,11 @@
 function NodeViewModel( params ) {
     var self = this;
     self.data = params.object;
-
-    self.title = ko.computed( function () {
-        return self.data.album + " - " + self.data.artist + " (" + self.data.year + ")";
-    });
     self.url = ko.computed( function () {
-        return "/res/" + self.data.key + self.data.ext;
+        if (typeof self.data === 'undefined' || self.data === null) {
+            return "";
+        }
+        return API_URI + "/res/" + self.data.key + self.data.ext;
     });
 }
 
@@ -16,8 +15,8 @@ ko.components.register('folder', {
     },
     template:
         '<div class="card">\
-        <span id="browse"\ data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, css: $root.style(data)"/>\
-         <p class="card-text" data-bind="text:data.name"></p>\
+        <span class="browse"\ data-bind="click: function() { $root.push( data.key, data.name ) }, css: $root.style(data)"/>\
+         <p data-bind="text:data.name"></p>\
         </div>'
 });
 ko.components.register('album', {
@@ -25,14 +24,11 @@ ko.components.register('album', {
         return new NodeViewModel( params );
     },
     template:
-        '<div class="card">\
-        <img data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, attr: { src: data.thumb, title: data.album }"/>\
-         <p class="card-text">\
-            <span data-bind="text:data.album" />\
-            /<span data-bind="text:data.artist" />\
-            (<span data-bind="text:data.year" />)\
-         </p>\
-        </div>'
+        '<div class="media">\
+        <img class="d-flex mr-3" data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.thumb }"/>\
+        <div class="media-body"><h5 class="mt-0" data-bind="text:data.name"></h5>\
+        Artist: <span data-bind="text:data.artist" />, Year: <span data-bind="text:data.year" /><br/>\
+        </div></div>'
 });
 ko.components.register('audio', {
     viewModel: function(params) {
@@ -40,7 +36,7 @@ ko.components.register('audio', {
     },
     template:
         '<div class="card">\
-        <img data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, attr: { src: data.thumb, title: data.album }"/>\
+        <img data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.thumb, title: data.album }"/>\
          <p class="card-text">\
             <span data-bind="text:data.album" />\
             /<span data-bind="text:data.artist" />\
@@ -69,13 +65,13 @@ ko.components.register('movie', {
         return new NodeViewModel( params );
     },
     template:
-        '<div class="media">\
-         <div class="media-left" data-bind="css: $root.style(data)">\
-             <a data-bind="attr: { href: url, title: name }, text:data.name"></a>\
-         </div>\
-         <div class="media-body">\
-         </div>\
-        </div>'
+'<div class="media">\
+<img class="d-flex mr-3" data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.thumb, title: data.name }" alt="cover">\
+<div class="media-body">\
+  <h5 class="mt-0" data-bind="text:data.name"></h5>\
+  <span data-bind="html:data.comment"></span>\
+</div>\
+</div>'
 });
 ko.components.register('image', {
     viewModel: function(params) {
@@ -83,7 +79,19 @@ ko.components.register('image', {
     },
     template:
         '<div class="card">\
-        <img width="200px" height="200px" data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, attr: { src: url, title: data.album }"/>\
+        <img data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.tn, title: data.name+data.ext }"/>\
+         <p class="card-text">\
+            <span data-bind="text:data.name" />\
+         </p>\
+        </div>'
+});
+ko.components.register('cover', {
+    viewModel: function(params) {
+        return new NodeViewModel( params );
+    },
+    template:
+        '<div class="card">\
+        <img data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.tn, title: data.name+data.ext }"/>\
          <p class="card-text">\
             <span data-bind="text:data.name" />\
          </p>\
@@ -97,33 +105,29 @@ ko.components.register('artist', {
         '<div class="card">\
             <p class="card-text">\
             <img src=""/>\
-            <a href="#" data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, text:data.artist" />\
+            <a href="#" data-bind="click: function() { $root.push(data.key, data.name) }, text:data.name" />\
             </p>\
         </div>'
 });
 ko.components.register('serie', {
-    viewModel: function(params) {
-        return new NodeViewModel( params );
-    },
+    viewModel: function(params) { return new NodeViewModel( params ); },
     template:
-        '<div class="card">\
-        <img data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, attr: { src: data.thumb, title: data.serie }"/>\
-        <p class="card-text">\
-           <span data-bind="text:data.name" />\
-           (<span data-bind="text:data.year" />)\
-        </p>\
-        </div>'
+'<div class="media">\
+<img class="d-flex mr-3" data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.thumb, title: data.name }" alt="cover">\
+<div class="media-body">\
+  <h5 class="mt-0" data-bind="text:data.name"></h5>\
+  <span data-bind="html:data.comment"></span>\
+</div>\
+</div>'
 });
 ko.components.register('ebook', {
-    viewModel: function(params) {
-        return new NodeViewModel( params );
-    },
+    viewModel: function(params) { return new NodeViewModel( params ); },
     template:
-        '<div class="card">\
-        <img data-bind="click: function() { $root.load(data.cls, data.key, data.name) }, attr: { src: data.thumb, title: data.serie }"/>\
-        <p class="card-text">\
-           <span data-bind="text:data.name" />\
-           (<span data-bind="text:data.year" />)\
-        </p>\
-        </div>'
+'<div class="media">\
+ <img class="d-flex mr-3" data-bind="click: function() { $root.push(data.key, data.name) }, attr: { src: API_URI+data.thumb, title: data.name }" alt="cover">\
+ <div class="media-body">\
+   <h5 class="mt-0" data-bind="text:data.name"></h5>\
+   <span data-bind="html:data.comment"></span>\
+ </div>\
+</div>'
 });

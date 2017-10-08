@@ -36,7 +36,7 @@ include(cmake/external/spdlog.cmake)
 
 SET( INCLUDES ${INCLUDES} ${GTEST_INCLUDE_DIR} ${FMT_INCLUDE_DIR}
             ${RE2_INCLUDE_DIR} ${ASIO_INCLUDE_DIR} ${LIGHTNING_INCLUDE_DIR}
-            ${CXXOPTS_INCLUDE_DIR} ${SPDLOG_INCLUDE_DIR})
+            ${CXXOPTS_INCLUDE_DIR} ${REDOX_INCLUDE_DIR} ${SPDLOG_INCLUDE_DIR})
 
 # -------------------------------------------------------------------------
 # -----------------------   Find Dependencies       -----------------------
@@ -58,10 +58,13 @@ SET( LIBS ${LIBS}
 FILE(GLOB_RECURSE HeaderFiles "${PROJECT_SOURCE_DIR}/src/*.h")
 add_custom_target(cds_headers SOURCES ${HeaderFiles})
 
+FILE(GLOB_RECURSE WWWFiles "${PROJECT_SOURCE_DIR}/docroot/*")
+add_custom_target(www SOURCES ${WWWFiles})
+
 # -------------------------------------------------------------------------
 # -----------------------   Compile Binary          -----------------------
 # -------------------------------------------------------------------------
 aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
 include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
-add_executable(www ${WWW_SOURCES})
-target_link_libraries(www re2 lightning redox fmt spdlog ${LIBS})
+add_executable(squawk-www ${WWW_SOURCES})
+target_link_libraries(squawk-www re2 lightning redox fmt spdlog ${LIBS})

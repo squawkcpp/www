@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Squawk Content Directory Server</title>
+
+    <!-- load CSS and font fiiles -->
+    <link href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/css/lightgallery.min.css"
+          integrity="sha256-6hdzBLI5YrM1ltRrsPdV0y2CsqGgLYCeNlLFFQoh7MY=" crossorigin="anonymous" />
+
+    <!-- Custom styles for this template -->
+    <link href="/squawk.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/squawk.html"><img src="/icons/squawk32.png"/></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto" data-bind="foreach: navigation_nodes">
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-bind="text: name, click: function() { $root.key( key ) }"></a>
+            </li>
+          </ul>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon fa fa-search" id="basic-addon1"></span>
+          <div id="search_input">
+            <input data-bind="jqAuto: { value: search, source: getOptions }" />
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/home-bg.jpg')">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>Clean Blog</h1>
+              <span class="subheading">A Blog Theme by Start Bootstrap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div id="dot" class="dot"></div>
+    <div id="squawkContent" class="container-fluid cds_content">
+        <div class="row" data-bind="foreach: nodes">
+            <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+            <div class="col squawkItem" data-bind="css: $root.style($data), click: function() { $root.key( key ) }">
+                <span data-bind="text: name"/>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+            <div class="col squawkItem" data-bind='click: function(data, event) { $root.expand(data, event, $index() ); }, attr: {id: "col"+$index()}'>
+                <a role="button" data-toggle="collapse" aria-expanded="false"
+                    data-bind='attr: {ariaControls: "albumCollapse"+$index()}'>
+                    <img data-bind="attr: { src: API_URI+thumb}"/><!-- span data-bind="text: name"/ --></img>
+                </a>
+                <!-- div class="collapse" data-bind='attr: {id: "albumCollapse"+$index()}'>
+                    <div class="float">PLACEHOLDER</div>
+                </div -->
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
+    <hr/>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; Your Website 2017</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+      <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+            integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/js/lightgallery.min.js"
+            integrity="sha256-yXJsrJUL9at6M9rBtYz0gJQFxux8nvKt0QwzqVkPTG4=" crossorigin="anonymous"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="/knockout-jqAutocomplete.min.js"></script>
+    <script src="/squawk2.js"></script>
+
+    <script type="text/html" id="album-template">
+<div class="media">
+    <ul id="gallery" class="" data-bind="foreach: {data: covers}">
+        <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
+            <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}'>
+                <div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div>
+            </a>
+        </li>
+    </ul>
+  <div class="media-body">
+    <h4 data-bind="text: name"/><span data-bind="text: artist"/><br/><span data-bind="text: year"/>
+      <table class="table">
+        <thead>
+            <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
+        <thead>
+        <tbody data-bind="foreach: {data: audiofiles}">
+        <tr>
+            <td data-bind="text: track"/>
+            <td data-bind="text: name"/>
+            <td data-bind="text: playlength"/>
+            <td data-bind="text: bitrate"/>
+            <td data-bind="text: samplerate"/>
+            <td data-bind="text: bps"/>
+            <td data-bind="text: channels"/>
+         </tr>
+         </tbody>
+      </table>
+    </div>
+</div>
+</script>
+
+  </body>
+
+</html>

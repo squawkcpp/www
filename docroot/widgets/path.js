@@ -32,3 +32,4 @@ ko.components.register('path-widget', {
            <!-- /ko --> \
         </ol>'
 });
+

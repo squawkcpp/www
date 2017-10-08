@@ -4,7 +4,7 @@ function AdminModel( params ) {
     self.httpPort = ko.observable('0');
     self.media = ko.observableArray();
 
-    $.getJSON( "/cds/config", function( data ) {
+    $.getJSON( "config", function( data ) {
         self.httpIp( data.httpIp );
         self.httpPort( data.httpPort );
         ko.utils.arrayPushAll(self.media, data.media);
