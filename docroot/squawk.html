@@ -25,21 +25,39 @@
   </head>
   <body>
 
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" href="#"><img src="/icons/squawk16.png"/></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto" data-bind="foreach: navigation_nodes">
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bind="text: name, click: function() { $root.key( key ) }"></a>
+        </li>
+    </ul>
+    <form class="form-inline">
+       <input class="form-control form-control-sm" type="text" placeholder="Search"
+              aria-label="Search" data-bind="jqAuto: { value: search, source: getOptions }">
+       <div data-bind="component: {
+           name: 'sort-widget',
+           params: { sortKeys: sortKeys }}"></div>
+           <div data-bind="component: {
+               name: 'order-widget',
+               params: { order: order, style: orderStyle }}"></div>
+      </div>
+     </form>
+  </div>
+</nav>
+
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <!-- nav class="navbar navbar-expand-lg bg-dark" id="mainNav">
       <div class="container-fluid">
         <a class="navbar-brand" href="/squawk.html"><img src="/icons/squawk32.png"/></a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto" data-bind="foreach: navigation_nodes">
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-bind="text: name, click: function() { $root.key( key ) }"></a>
-            </li>
-          </ul>
-        </div>
         <div class="input-group">
           <span class="input-group-addon fa fa-search" id="basic-addon1"></span>
           <div id="search_input">
@@ -47,10 +65,10 @@
           </div>
         </div>
       </div>
-    </nav>
+    </nav -->
 
     <!-- Page Header -->
-    <header class="masthead" style="background-image: url('img/home-bg.jpg')">
+    <!-- header class="masthead" style="background-image: url('img/home-bg.jpg')">
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
@@ -61,29 +79,30 @@
           </div>
         </div>
       </div>
-    </header>
+    </header -->
 
     <!-- Main Content -->
     <div id="dot" class="dot"></div>
     <div id="squawkContent" class="container-fluid cds_content">
-        <div class="row" data-bind="foreach: nodes">
-            <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
-            <div class="col squawkItem" data-bind="css: $root.style($data), click: function() { $root.key( key ) }">
-                <span data-bind="text: name"/>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
-            <div class="col squawkItem" data-bind='click: function(data, event) { $root.expand(data, event, $index() ); }, attr: {id: "col"+$index()}'>
-                <a role="button" data-toggle="collapse" aria-expanded="false"
-                    data-bind='attr: {ariaControls: "albumCollapse"+$index()}'>
-                    <img data-bind="attr: { src: API_URI+thumb}"/><!-- span data-bind="text: name"/ --></img>
-                </a>
-                <!-- div class="collapse" data-bind='attr: {id: "albumCollapse"+$index()}'>
-                    <div class="float">PLACEHOLDER</div>
-                </div -->
-            </div>
-            <!-- /ko -->
-        </div>
+       <div class="row" data-bind="foreach: nodes">
+           <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+           <div class="col squawkItem" data-bind="css: $root.style($data), click: function() { $root.key( key ) }">
+               <span data-bind="text: name"/>
+           </div>
+           <!-- /ko -->
+           <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+           <div class="col squawkItem" data-bind='click: function(data, event) { $root.expand(data, event, key ); }, attr: {id: key}'>
+               <a role="button" data-toggle="collapse" aria-expanded="false"
+                   data-bind='attr: {ariaControls: "albumCollapse"+key}'>
+                   <img class="squawkExpandableImage" data-bind="attr: { src: API_URI+thumb}"/><!-- span data-bind="text: name"/ --></img>
+               </a>
+                    <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
+                    <!-- div class="collapse" data-bind='attr: {id: "albumCollapse"+key}'>
+                   <div class="float">PLACEHOLDER</div>
+               </div -->
+           </div>
+           <!-- /ko -->
+       </div>
     </div>
     <hr/>
 
@@ -147,32 +166,46 @@
     <script src="/squawk2.js"></script>
 
     <script type="text/html" id="album-template">
-<div class="media">
-    <ul id="gallery" class="" data-bind="foreach: {data: covers}">
-        <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
-            <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}'>
-                <div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div>
-            </a>
-        </li>
-    </ul>
-  <div class="media-body">
-    <h4 data-bind="text: name"/><span data-bind="text: artist"/><br/><span data-bind="text: year"/>
-      <table class="table">
-        <thead>
-            <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
-        <thead>
-        <tbody data-bind="foreach: {data: audiofiles}">
-        <tr>
-            <td data-bind="text: track"/>
-            <td data-bind="text: name"/>
-            <td data-bind="text: playlength"/>
-            <td data-bind="text: bitrate"/>
-            <td data-bind="text: samplerate"/>
-            <td data-bind="text: bps"/>
-            <td data-bind="text: channels"/>
-         </tr>
-         </tbody>
-      </table>
+<div class="container-fluid squawkExpandable">
+<div class="row">
+    <div class="col-3">
+        <a href="#close-jump-1" class="expand__close"></a>
+        <ul id="gallery" class="" data-bind="foreach: {data: covers}">
+            <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
+                <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}'>
+                <!-- div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div -->
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-md-2">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 data-bind="text: name"/><span data-bind="text: artist"/><br/><span data-bind="text: year"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-inverse table-striped table-sm">
+                <thead>
+                <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
+                <thead>
+                <tbody data-bind="foreach: {data: audiofiles}">
+                <tr>
+                <td data-bind="text: track"/>
+                <td data-bind="text: name"/>
+                <td data-bind="text: playlength"/>
+                <td data-bind="text: bitrate"/>
+                <td data-bind="text: samplerate"/>
+                <td data-bind="text: bps"/>
+                <td data-bind="text: channels"/>
+                </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 </script>

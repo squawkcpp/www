@@ -42,66 +42,26 @@ var API_URI="http://192.168.0.1:9001/";
 })(jQuery); // End of use strict
 
 
-
-ko.components.register('album-page-widget', {
+ko.components.register('sort-widget', {
     viewModel: function(params) {
-        var self = this;
-        self.methods = $('#gallery');
-        self.node = params.node;
-        self.nodes = ko.observable();
-        self.audiofiles = ko.computed(function() {
-            return ko.utils.arrayFilter(self.nodes(), function(item) {
-                return item.cls == "audio";
-            });
-        });
-        self.covers = ko.computed(function() {
-            return ko.utils.arrayFilter(self.nodes(), function(item) {
-                return item.cls == "cover";
-            });
-        });
-        self.cover_url = ko.computed(function(key) {
-            if( typeof key !== 'undefined' ) {
-                return API_URI + "/res/" + key + ".jpg";
-            } return "";
-        });
-        for( i=0; i<self.covers().length; i++ ) {
-
-            self.methods.append("<li class=\"col-xs-6 col-sm-4 col-md-3\" data-src=\"" + API_URI + "/res/" + self.covers()[i].key + self.covers()[i].ext + "\">"+
-                                "<a href=\"\"><img class=\"img-responsive\" src=\"" + API_URI + "/img/tn_" + self.covers()[i].key + ".jpg\">"+
-                                "<div class=\"demo-gallery-poster\"><img src=\"http://sachinchoolur.github.io/lightGallery/static/img/zoom.png\"></div></a></li>");
-        }
-
-        self.methods.lightGallery();
+        this.sortKeys = params.sortKeys;
     },
-    template:
-'                           Album Component: \
-<div class="panel panel-default">\
-<div class="demo-gallery dark mrb15">\
-  <ul id="gallery" class="list-unstyled row"></ul>\
-</div>\
-  <div class="panel-heading"><h4 data-bind="text: node.name"/><span data-bind="text: node.artist"/><br/><span data-bind="text: node.year"/></div>\
-<div class="panel-body">\
-  <table class="table">\
-    <thead>\
-        <tr><th>#</th><th>Title</th><th>Artist</th><th>Album</th><th>Year</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>\
-    <thead>\
-    <tbody data-bind="foreach: {data: audiofiles}">\
-    <tr>\
-        <td data-bind="text: track"/>\
-        <td data-bind="text: name"/>\
-        <td data-bind="text: artist"/>\
-        <td data-bind="text: album"/>\
-        <td data-bind="text: year"/>\
-        <td data-bind="text: playlength"/>\
-        <td data-bind="text: bitrate"/>\
-        <td data-bind="text: samplerate"/>\
-        <td data-bind="text: bps"/>\
-        <td data-bind="text: channels"/>\
-     </tr>\
-     </tbody>\
-  </table>\
+template: '<div class="dropdown">\
+ <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bind="text: $root.sort()"></a>\
+ <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" data-bind="foreach: sortKeys">\
+   <a class="dropdown-item" href="#" data-bind="click: function() { $root.sort( $data ) }, text: $data"></a>\
+ </div>\
 </div>'
 });
+
+ko.components.register('order-widget', {
+    viewModel: function(params) {
+        this.order = params.order;
+        this.style = params.style;
+    },
+    template: '<span class="fa" aria-hidden="true" data-bind="click: function() { $root.do_order() }, css: style"></span>'
+});
+//<button id="order" type="button" class="btn form-control-sm my-2 my-sm-0" data-bind="click: function() { $root.do_order() }, text: order"></button>'
 
 function AlbumViewModel() {
     var self = this;
@@ -133,30 +93,21 @@ function AlbumViewModel() {
     }
 }
 
-// Overall viewmodel for this screen, along with initial state
+// ------------------------------------------------------------------------------------------------
+// --- Application View Model                                                                   ---
+// ------------------------------------------------------------------------------------------------
 function SquawkViewModel() {
     var self = this;
     self.viewModel = new AlbumViewModel();
 
+    //calculate the position of the element passed.
     var cumulativeOffset = function(element) {
         var top = 0;
         var left = 0;
-        do {
-            if( !(element.position() === 'undefined') ) {
-                top += element.position().top  || 0;
-                top -= parseInt( element.css('padding-top') ) || 0;
-                top -= parseInt( element.css('margin-top') ) || 0;
-                top -= parseInt( element.css('border-top-width') ) || 0;
-                top -= parseInt( element.css('spacing-top') ) || 0;
 
-                left += element.position().left || 0;
-                left -= parseInt( element.css('padding-left') ) || 0;
-                left -= parseInt( element.css('margin-left') ) || 0;
-                left -= parseInt( element.css('border-left-width') ) || 0;
-                left -= parseInt( element.css('spacing-left') ) || 0;
-            }
-            element = element.parent();
-        } while( element.prop("tagName")!="HTML" );
+        var viewportOffset = element[0].getBoundingClientRect();
+        top = viewportOffset.top;
+        left = viewportOffset.left;
 
         return {
             top: top,
@@ -164,45 +115,124 @@ function SquawkViewModel() {
         };
     };
 
+    //exand the node content in the list view.
     self.expand_last = -1;
-    self.expand = function(data, event, param) {
-        _index = param;
-        _param = $("#col"+param);
-        _offset = cumulativeOffset( _param );
-        found = false;
-        var _param_iterate = _param;
-        do {
-            _offset = cumulativeOffset( _param_iterate );
-            if( $( window ).width() <  _offset.left+160+160 ) {
-                found = true;
-                $("#dot").css({borderColor: "Red", top: _offset.top, left: _offset.left+160, position:'absolute'});
-            } else {
-                _index++;
-                _param_iterate = _param_iterate.nextAll('.col').first();
-            }
-        } while( found == false && _param_iterate != null && !(_param_iterate === 'undefined') );
 
-        console.log( "index: " + _index );
-        if( self.expand_last == _index ) {
-            console.log( "reuse last expand: " + self.expand_last );
-        } else {
-            console.log( "create expand: " + _index );
+    self.calculate_expand_last_in_row = function(node) {
+        var _col = $("#"+node);
+        do {
+            _offset = cumulativeOffset( _col );
+            if( $( window ).width() <  _offset.left+160+160 ) { //TODO calcultate or configure size
+                //TODO remove dot.
+                $("#dot").css({borderColor: "Red", top: _offset.top, left: _offset.left+160, position:'absolute'});
+                return _col.attr( "id" );
+            } else {
+                _col = _col.nextAll('.squawkItem').first();
+            }
+        } while( _col != null && !(_col === 'undefined') );
+        return node.nextAll('.squawkItem').last().attr( "id" );
+    }
+
+    self.calculate_expand_index = function(node) {
+        var col_id = self.calculate_expand_last_in_row( node );
+        var reuse = false;
+        var direction = "buttom";
+
+        if( self.expand_last != -1 ) {
+            if( col_id == self.expand_last ) {
+                reuse = true;
+            } else {
+                __next_last_col = self.calculate_expand_last_in_row( $("#"+self.expand_last).nextAll('.squawkItem').next().attr( "id" ) );
+                __list = $("#"+self.expand_last).nextAll('.squawkItem').each(function(index, value){
+                    if( value.id == node ) {
+                        reuse = true;
+                        direction = "top";
+                        col_id = self.expand_last;
+                        return false;
+                    }
+                    if( __next_last_col == value.id ) {
+                        return false;
+                    }
+                });
+            }
+        }
+
+        return {
+          col_id: col_id,
+          reuse: reuse,
+          direction: direction
+        };
+    }
+
+    self.expand = function(data, event, param) {
+
+        var _index = self.calculate_expand_index( param );
+        _param = $("#"+param);
+
+        if( _index.reuse == false ) {
             $("#albumCollapse"+self.expand_last).collapse({
               toggle: false
             })
             $("#albumCollapse"+self.expand_last).remove();
-            $("#col"+_index).after('<div class="container-fluid" id="albumCollapse' + _index + '">PLACEHOLDER</div>');
+            $("#"+_index.col_id).after('<div class="container-fluid" id="albumCollapse' + _index.col_id + '">PLACEHOLDER</div>');
         }
 
-        self.expand_last = _index;
-        self.viewModel.render( data, $("#albumCollapse"+_index)[0] );
+        self.expand_last = _index.col_id;
+        $(".arrow-up").hide();
+        //TODO does not exist. $(".arrow-down").hide();
+        $("#arrow"+_param.attr("id")).show(); //TODO create up and down arrows
+        self.viewModel.render( data, $("#albumCollapse"+_index.col_id)[0] );
     }
+
+    //selected content
+    self.nodes = ko.observableArray();
+    ko.extenders.viewChange = function(target, option) {
+        target.subscribe(function(newValue) {
+            console.log( "load nodes and sort key for: " + self.key() + ", target:"+ target() + ", option:" + option );
+            if( option == "key" ) {
+                //get sort criteria
+                $.getJSON( API_URI+newValue+"/sort", function( data ) {
+                    self.sortKeys([]);
+                    ko.utils.arrayPushAll(self.sortKeys, data);
+                });
+            }
+            //get nodes
+            $.get(API_URI+self.key()+"/nodes" +
+                  "?index=" + "0" + //TODO ((self.paginationModel.page()-1)*self.paginationModel.pageSize()) +
+                  "&count="+ "128" + //TODO self.paginationModel.pageSize()+
+                  "&sort="+self.sort()+
+                  "&order="+(self.order()?"asc":"desc")+
+                  "&filter="+self.search(),
+                  function(data) { //TODO ADD FILTER
+                    self.nodes([]);
+                    ko.utils.arrayPushAll(self.nodes, data.nodes);
+                  }
+            );
+        });
+        return target;
+    };
 
     //root_nodes
     self.navigation_nodes = ko.observableArray();
 
+    //filter and order
+    self.key = ko.observable().extend( {viewChange: "key"} );
+    self.search = ko.observable( "" ).extend( {viewChange: "search"} );
+    self.order = ko.observable( false ).extend( {viewChange: "order"} );
+    self.orderStyle = ko.observable( "fa-sort-amount-asc" );
+    self.sort = ko.observable( "alpha" ).extend( {viewChange: "sort"} );
+    self.sortKeys = ko.observableArray();
+
+    self.do_order = function() {
+        self.order( !self.order() );
+        if( self.order() ) {
+            self.orderStyle( "fa-sort-amount-asc" );
+        } else {
+            self.orderStyle( "fa-sort-amount-desc" );
+        }
+    };
+
     //autocomplete input
-    self.search = ko.observable();
     self.getOptions = function(searchTerm, callback) {
             $.ajax({
               dataType: "json",
@@ -210,31 +240,9 @@ function SquawkViewModel() {
             }).done(callback);
         };
 
-    //selected content
-    self.nodes = ko.observableArray();
-    ko.extenders.viewChange = function(target, option) {
-        target.subscribe(function(newValue) {
-            $.get(API_URI+newValue+"/nodes", function(data) {
-                self.nodes([]);
-                ko.utils.arrayPushAll(self.nodes, data.nodes);
-            });
-        });
-        return target;
-    };
-    self.key = ko.observable().extend( {viewChange: "key"} );
-
-//    self.expand = function ( node ) {
-//        console.log( "this is: " + this );
-//        var bmdiv = document.createElement('div');
-//        bmdiv.innerHTML = 'xxxxx<div data-bind="component: { name: $root.page, params: { node: $root.node }}"></div>';
-//        $('#'+node.key ).append( bmdiv );
-
-//        self.node( node );
-//        self.page( "album-page-widget" );
-//    }
-
-    self.node = ko.observable();
-    self.page = ko.observable("album-page-widget");
+    //the node list navigation
+    self.node = ko.observable(); //todo remove
+    self.page = ko.observable("album-page-widget"); //TODO remove
 
     //select item icon
     self.style = function (data, size ) {
@@ -270,7 +278,7 @@ function SquawkViewModel() {
     //load initial data
     $.get(API_URI+"/root/nodes", function(data) {
         ko.utils.arrayPushAll(self.navigation_nodes, data.nodes);
-        ko.utils.arrayPushAll(self.nodes, data.nodes);
+        //ko.utils.arrayPushAll(self.nodes, data.nodes);
     });
 }
 

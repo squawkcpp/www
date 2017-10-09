@@ -165,31 +165,6 @@ ko.components.register('order-widget', {
 template: '<button id="order" type="button" class="btn btn-secondary" data-bind="click: function() { $root.do_order() }, text: order"></button>'
 });
 
-ko.components.register('sort-widget', {
-    viewModel: function(params) {
-        this.sortKeys = params.sortKeys;
-    },
-template: '<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
-    <span data-bind="text: $root.sort"/>\
-</button>\
-<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" data-bind="foreach: sortKeys">\
-  <a class="dropdown-item" href="#" data-bind="click: function() { $root.sort( $data ) }, text: $data"></a>\
-</div>'
-});
-
-// PAGE WIDGETS
-ko.components.register('ebook-page-widget', {
-    viewModel: function(params) {
-        var self = this;
-        self.node = params.node;
-    },
-    template:
-'EBOOK<div class="panel panel-default">\
-  <!-- Default panel contents -->\
-  <div class="panel-heading"><h4 data-bind="text: node.name"/><span data-bind="text: node.author"/><span data-bind="text: node.year"/></div>\
-<div class="panel-body" data-bind="text: node.comment">\
-</div>'
-});
 
 ko.components.register('movie-page-widget', {
     viewModel: function(params) {
