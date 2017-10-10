@@ -70,7 +70,7 @@ add_custom_target(www SOURCES ${WWWFiles})
 aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
 include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
 add_executable(squawk-www ${WWW_SOURCES})
-target_link_libraries(squawk-www re2 lightning redox fmt spdlog ${LIBS})
+target_link_libraries(squawk-www re2 lightning asio redox fmt spdlog ${LIBS})
 
 install(TARGETS squawk-www RUNTIME DESTINATION bin)
 
