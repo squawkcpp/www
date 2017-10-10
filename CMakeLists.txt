@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------
 # Build Media server with html gui.
 # -------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 
 project( www )
 
@@ -13,6 +13,9 @@ SET(PATCH_VERSION "1" CACHE PATCH_VERSION "The package build number." )
 # -----------------------   Options and Parameters  -----------------------
 # -------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+configure_file(${PROJECT_SOURCE_DIR}/Dockerfile.in ${PROJECT_SOURCE_DIR}/Dockerfile @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/travis.yml.in ${PROJECT_SOURCE_DIR}/.travis.yml @ONLY)
 
 # -------------------------------------------------------------------------
 # -----------------------   Config Toolchain        -----------------------
@@ -68,3 +71,39 @@ aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
 include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
 add_executable(squawk-www ${WWW_SOURCES})
 target_link_libraries(squawk-www re2 lightning redox fmt spdlog ${LIBS})
+
+install(TARGETS squawk-www RUNTIME DESTINATION bin)
+
+# -------------------------------------------------------------------------
+# -----------------------   Generate Package        -----------------------
+# -------------------------------------------------------------------------
+IF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/docroot/ DESTINATION share/squawk-www )
+
+INCLUDE(InstallRequiredSystemLibraries)
+
+SET(CPACK_SET_DESTDIR "on")
+SET(CPACK_PACKAGING_INSTALL_PREFIX "/tmp")
+SET(CPACK_GENERATOR "DEB")
+
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+
+SET(CPACK_PACKAGE_DESCRIPTION "loudlabs media server")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "squawk web server.")
+SET(CPACK_PACKAGE_VENDOR "loudlabs")
+SET(CPACK_PACKAGE_CONTACT "squawkcpp@gmail.com")
+SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
+SET(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}")
+SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
+SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpcrecpp0v5")
+SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION "media")
+SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+SET(CPACK_COMPONENTS_ALL applications Libraries ApplicationData)
+INCLUDE(CPack)
+
+ENDIF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
+
