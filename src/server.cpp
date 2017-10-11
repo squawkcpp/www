@@ -44,7 +44,7 @@ int main( int argc, char* argv[] ) {
     if ( options.count( PARAM_HTTP_PORT ) )
     { _port = options[PARAM_HTTP_PORT].as<std::string>(); }
     if ( options.count( PARAM_DOCROOT ) )
-    { _port = options[PARAM_DOCROOT].as<std::string>(); }
+    { _docroot = options[PARAM_DOCROOT].as<std::string>(); }
     //TODO set cds uri
 
     //start server
