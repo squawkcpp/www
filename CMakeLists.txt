@@ -5,18 +5,12 @@ cmake_minimum_required(VERSION 3.3)
 
 project( www )
 
-SET(MAJOR_VERSION "0")
-SET(MINOR_VERSION "1")
-SET(PATCH_VERSION "1" CACHE PATCH_VERSION "The package build number." )
-SET(WWW_TAG_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
+SET(UPNP_TAG_VERSION "master" CACHE STRING "The tagged version.")
 
 # -------------------------------------------------------------------------
 # -----------------------   Options and Parameters  -----------------------
 # -------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
-configure_file(${PROJECT_SOURCE_DIR}/Dockerfile.in ${PROJECT_SOURCE_DIR}/Dockerfile @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/travis.yml.in ${PROJECT_SOURCE_DIR}/.travis.yml @ONLY)
 
 # -------------------------------------------------------------------------
 # -----------------------   Config Toolchain        -----------------------
@@ -60,7 +54,7 @@ SET( LIBS ${LIBS}
 
 #add headers for editor
 FILE(GLOB_RECURSE HeaderFiles "${PROJECT_SOURCE_DIR}/src/*.h")
-add_custom_target(cds_headers SOURCES ${HeaderFiles})
+add_custom_target(www_headers SOURCES ${HeaderFiles})
 
 FILE(GLOB_RECURSE WWWFiles "${PROJECT_SOURCE_DIR}/docroot/*")
 add_custom_target(www SOURCES ${WWWFiles})
@@ -94,11 +88,24 @@ SET(CPACK_PACKAGE_DESCRIPTION "loudlabs media server")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "squawk web server.")
 SET(CPACK_PACKAGE_VENDOR "loudlabs")
 SET(CPACK_PACKAGE_CONTACT "squawkcpp@gmail.com")
+
+if(WWW_TAG_VERSION MATCHES "^([0-9]+)[.]([0-9]+)[.]([0-9]+)$" )
+    string(REPLACE "." ";" WWW_TAG_VERSION_STRING ${WWW_TAG_VERSION})
+    list(GET WWW_TAG_VERSION_STRING 0 MAJOR_VERSION)
+    list(GET WWW_TAG_VERSION_STRING 1 MINOR_VERSION)
+    list(GET WWW_TAG_VERSION_STRING 2 PATCH_VERSION)
+else()
+    SET(MAJOR_VERSION "0")
+    SET(MINOR_VERSION "0")
+    SET(PATCH_VERSION "0")
+endif()
+
 SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}")
-SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
-SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${WWW_TAG_VERSION}")
+SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${WWW_TAG_VERSION}")
 
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpcrecpp0v5")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
