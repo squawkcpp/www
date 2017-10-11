@@ -25,7 +25,7 @@ int main( int argc, char* argv[] ) {
     //parse args
     cxxopts::Options options("squawk upnp cli", "Command line interface for the squawk upnp media server.");
     options.add_options()            
-        ( PARAM_LISTEN_ADDRESS, "the the address for the http server.", cxxopts::value<std::string>()->default_value("0.0.0.0"), "IP" )
+        ( PARAM_LISTEN_ADDRESS, "the the address for the http server.", cxxopts::value<std::string>() /* TODO ->default_value("0.0.0.0") */, "IP" )
         ( PARAM_HTTP_PORT, "port of the web server.", cxxopts::value<std::string>()->default_value("9000"), "PORT" )
         ( PARAM_CDS_URI, "CDS uri.", cxxopts::value<std::string>(), "URI" )
         ( PARAM_DOCROOT, "Path to the web application files.)", cxxopts::value<std::string>()->default_value("/usr/local/share/squawk-www"), "PATH" )
