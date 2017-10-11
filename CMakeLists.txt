@@ -70,7 +70,8 @@ add_custom_target(www SOURCES ${WWWFiles})
 aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
 include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
 add_executable(squawk-www ${WWW_SOURCES})
-target_link_libraries(squawk-www cxxopts re2 lightning redox fmt spdlog asio rapidjson ${LIBS})
+target_link_libraries(squawk-www cxxopts re2 lightning redox fmt spdlog asio rapidjson gtest ${LIBS})
+#TODO remove gtest, it is required because of lightning
 
 install(TARGETS squawk-www RUNTIME DESTINATION bin)
 
