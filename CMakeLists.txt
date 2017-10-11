@@ -8,6 +8,7 @@ project( www )
 SET(MAJOR_VERSION "0")
 SET(MINOR_VERSION "1")
 SET(PATCH_VERSION "1" CACHE PATCH_VERSION "The package build number." )
+SET(WWW_TAG_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
 # -------------------------------------------------------------------------
 # -----------------------   Options and Parameters  -----------------------
