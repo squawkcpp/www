@@ -12,7 +12,7 @@ RUN apt-get install -y libpcrecpp0v5 libimlib2 libavcodec-ffmpeg56 libavformat-f
         libcurl3 libhiredis0.13 libev4 libmagic1 libopencv-highgui2.4v5 \
 && dpkg -i /www_$WWW_TAG_VERSION.deb
 
-ADD script/www.sh /www.sh
+ADD docker/www.sh /www.sh
 RUN chmod +x /*.sh
 
 EXPOSE 9000
