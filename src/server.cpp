@@ -23,10 +23,10 @@ void signalHandler( int signum ) {
 
 int main( int argc, char* argv[] ) {
     //parse args
-    cxxopts::Options options("squawk upnp cli", "Command line interface for the squawk upnp media server.");
+    cxxopts::Options options("Squawk upnp cli", "Command line interface for the squawk upnp media server.");
     options.add_options()            
-        ( PARAM_LISTEN_ADDRESS, "the the address for the http server.", cxxopts::value<std::string>() /* TODO ->default_value("0.0.0.0") */, "IP" )
-        ( PARAM_HTTP_PORT, "port of the web server.", cxxopts::value<std::string>()->default_value("9000"), "PORT" )
+        ( PARAM_LISTEN_ADDRESS, "The the address for the http server.", cxxopts::value<std::string>()->default_value("0.0.0.0"), "IP" )
+        ( PARAM_HTTP_PORT, "Port of the web server.", cxxopts::value<std::string>()->default_value("9000"), "PORT" )
         ( PARAM_CDS_URI, "CDS uri.", cxxopts::value<std::string>(), "URI" )
         ( PARAM_DOCROOT, "Path to the web application files.)", cxxopts::value<std::string>()->default_value("/usr/local/share/squawk-www"), "PATH" )
         ( "help", "Print help")
@@ -41,14 +41,17 @@ int main( int argc, char* argv[] ) {
     std::string _ip, _port, _docroot;
     if ( options.count( PARAM_LISTEN_ADDRESS ) )
     { _ip = options[PARAM_LISTEN_ADDRESS].as<std::string>(); }
+    else { _ip = "0.0.0.0"; }
     if ( options.count( PARAM_HTTP_PORT ) )
     { _port = options[PARAM_HTTP_PORT].as<std::string>(); }
+    else { _port = "9000"; };
     if ( options.count( PARAM_DOCROOT ) )
     { _docroot = options[PARAM_DOCROOT].as<std::string>(); }
+    else { _docroot = "/usr/local/share/squawk-www"; }
     //TODO set cds uri
 
     //start server
-    std::cout << "Start squawk web server." << std::endl;
+    std::cout <<  "Start content directory server ({" << _ip << "}:{" << _port << "})" << std::endl;
 
     /** Setup and start the HTTP Server **/
     auto _web_server = std::shared_ptr< http::Server< http::HttpServer > >( new http::Server< http::HttpServer >( _ip, _port ) );
