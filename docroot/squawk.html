@@ -50,60 +50,35 @@
   </div>
 </nav>
 
-    <!-- Navigation -->
-    <!-- nav class="navbar navbar-expand-lg bg-dark" id="mainNav">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/squawk.html"><img src="/icons/squawk32.png"/></a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="input-group">
-          <span class="input-group-addon fa fa-search" id="basic-addon1"></span>
-          <div id="search_input">
-            <input data-bind="jqAuto: { value: search, source: getOptions }" />
-          </div>
-        </div>
-      </div>
-    </nav -->
-
-    <!-- Page Header -->
-    <!-- header class="masthead" style="background-image: url('img/home-bg.jpg')">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
-            <div class="site-heading">
-              <h1>Clean Blog</h1>
-              <span class="subheading">A Blog Theme by Start Bootstrap</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header -->
+<div data-bind="component: {
+    name: 'tag-widget',
+    params: { key: $root.key }}"></div>
+</div>
 
     <!-- Main Content -->
     <div id="dot" class="dot"></div>
-    <div id="squawkContent" class="container-fluid cds_content">
-       <div class="row" data-bind="foreach: nodes">
-           <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
-           <div class="col squawkItem" data-bind="css: $root.style($data), click: function() { $root.key( key ) }">
-               <span data-bind="text: name"/>
+        <div id="squawkContent" class="container-fluid cds_content">
+           <div class="row" data-bind="foreach: nodes">
+               <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+               <div class="col squawkItem" data-bind="css: $root.style($data), click: function() { $root.key( key ) }, attr: {id: key}">
+                   <span data-bind="text: name"/>
+               </div>
+               <!-- /ko -->
+               <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+               <div class="col squawkItem" data-bind='click: function(data, event) { $root.expand(data, event, key ); }, attr: {id: key}'>
+                   <a role="button" data-toggle="collapse" aria-expanded="false"
+                       data-bind='attr: {ariaControls: "albumCollapse"+key}'>
+                       <img class="squawkExpandableImage" data-bind="attr: { src: API_URI+thumb}"/><!-- span data-bind="text: name"/ --></img>
+                   </a>
+                        <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
+                        <!-- TODO div class="collapse" data-bind='attr: {id: "albumCollapse"+key}'>
+                       <div class="float">PLACEHOLDER</div>
+                   </div -->
+               </div>
+               <!-- /ko -->
            </div>
-           <!-- /ko -->
-           <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
-           <div class="col squawkItem" data-bind='click: function(data, event) { $root.expand(data, event, key ); }, attr: {id: key}'>
-               <a role="button" data-toggle="collapse" aria-expanded="false"
-                   data-bind='attr: {ariaControls: "albumCollapse"+key}'>
-                   <img class="squawkExpandableImage" data-bind="attr: { src: API_URI+thumb}"/><!-- span data-bind="text: name"/ --></img>
-               </a>
-                    <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
-                    <!-- div class="collapse" data-bind='attr: {id: "albumCollapse"+key}'>
-                   <div class="float">PLACEHOLDER</div>
-               </div -->
-           </div>
-           <!-- /ko -->
        </div>
-    </div>
+   </div>
     <hr/>
 
     <!-- Footer -->
@@ -163,32 +138,34 @@
 
     <!-- Custom scripts for this template -->
     <script src="/knockout-jqAutocomplete.min.js"></script>
+    <script src="/component_tag.js"></script>
     <script src="/squawk2.js"></script>
 
     <script type="text/html" id="album-template">
 <div class="container-fluid squawkExpandable">
-<div class="row">
-    <div class="col-3">
-        <a href="#close-jump-1" class="expand__close"></a>
-        <ul id="gallery" class="" data-bind="foreach: {data: covers}">
+<!--  a href="#close-jump-1" class="expand__close"></a -->
+<div class="row expandableGridImage">
+    <div class="col-md-6 squawkAlbumImage">
+        <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+        <!-- ul id="gallery" class="" data-bind="foreach: {data: covers}">
             <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
-                <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}'>
+                <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}' -->
                 <!-- div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div -->
-                </a>
+                <!-- /a>
             </li>
-        </ul>
+        </ul -->
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-6">
         <div class="row">
-            <div class="col-md-6">
-                <h4 data-bind="text: name"/><span data-bind="text: artist"/><br/><span data-bind="text: year"/>
+            <div class="col-md-12">
+                <h4 class="text-white" data-bind="text: name"/><span class="text-white" data-bind="text: artist"/><br/><span class="text-white" data-bind="text: year"/>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <table class="table table-inverse table-striped table-sm">
+            <div class="col-md-12">
+                <table class="table table-inverse table-striped table-sm songTable">
                 <thead>
                 <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
                 <thead>
@@ -210,6 +187,26 @@
 </div>
 </script>
 
-  </body>
+
+<script type="text/html" id="serie-template">
+<div class="container-fluid squawkExpandable">
+<!--  a href="#close-jump-1" class="expand__close"></a -->
+<div class="row expandableGridImage">
+<div class="col-md-6 squawkAlbumImage">
+    <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+</div>
+
+<div class="col-md-6">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="text-white" data-bind="text: name"/><span class="text-white" data-bind="text: artist"/><br/><span class="text-white" data-bind="text: year"/>
+        </div>
+    </div>
+</div>
+
+</div>
+</script>
+
+</body>
 
 </html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Squawk Content Directory Server</title>
+
+    <!-- load CSS and font fiiles -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/css/lightgallery.min.css"
+          integrity="sha256-6hdzBLI5YrM1ltRrsPdV0y2CsqGgLYCeNlLFFQoh7MY=" crossorigin="anonymous" />
+    <!-- Custom styles for this template -->
+    <link href="/squawk.css" rel="stylesheet">
+  </head>
+
+<body style="width: 100%; height: 100%; font-family: Sans-serif;">
+
+    <!-- div>
+        <strong>Total items:</strong>
+        <span data-bind="text: items().length"></span>
+        <br />
+        <strong>Display items:</strong>
+        <span data-bind="text: numItemsPerPage()"></span>
+        <br />
+        <strong>Rendered items:</strong>
+        <span data-bind="text: items.length - firstHiddenIndex()"></span>
+        <br />
+        <strong>Items per line:</strong>
+        <span data-bind="text: numItemsPerLine()"></span>
+        <br />
+        <strong>Lines:</strong>
+        <span data-bind="text: numLines()"></span>
+        <br />
+        <strong>Window Size:</strong>
+        <span data-bind="text: windowWidth()"></span>X
+        <span data-bind="text: windowHeight()"></span>
+        <br />
+    </div><br / -->
+
+    <div id="squawkContent" class="row container-fluid cds_content">
+        <!-- ko foreach: items -->
+        <div class="galleryItem" data-bind='click: function(data, event) { $root.expand(data, event, key ); }, attr: {id: key}'>
+            <a role="button" data-toggle="collapse" aria-expanded="false"
+                data-bind='attr: {ariaControls: "albumCollapse"+key}'>
+                <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+                <span data-bind="text: artist"></span><span>/</span><span data-bind="text: name"></span>
+                <!-- /ko -->
+                <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+                  <img class="galleryImage" data-bind="attr: { src: API_URI+thumb}"><!-- span data-bind="text: name"/ --></img>
+                <!-- /ko -->
+            </a>
+            <br/>
+            <!-- div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div -->
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+            integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+            integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/js/lightgallery.min.js"
+            integrity="sha256-yXJsrJUL9at6M9rBtYz0gJQFxux8nvKt0QwzqVkPTG4=" crossorigin="anonymous"></script>
+    <!-- Custom scripts for this template -->
+    <script src="/gallery.js"></script>
+
+</body>
+</html>

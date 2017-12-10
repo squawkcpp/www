@@ -61,7 +61,6 @@ ko.components.register('order-widget', {
     },
     template: '<span class="fa" aria-hidden="true" data-bind="click: function() { $root.do_order() }, css: style"></span>'
 });
-//<button id="order" type="button" class="btn form-control-sm my-2 my-sm-0" data-bind="click: function() { $root.do_order() }, text: order"></button>'
 
 function AlbumViewModel() {
     var self = this;
@@ -69,6 +68,8 @@ function AlbumViewModel() {
     self.name = ko.observable();
     self.artist = ko.observable();
     self.year = ko.observable();
+    self.thumb = ko.observable();
+    self.med = ko.observable();
     self.audiofiles = ko.observableArray();
     self.covers = ko.observableArray();
 
@@ -77,6 +78,8 @@ function AlbumViewModel() {
         self.name(data.name);
         self.artist(data.artist);
         self.year(data.year);
+        self.thumb(data.thumb);
+        self.med(data.med);
 
         $.getJSON( API_URI+self.key()+"/type/audio", function( data ) {
             self.audiofiles([]);
@@ -93,12 +96,42 @@ function AlbumViewModel() {
     }
 }
 
+function SerieViewModel() {
+    var self = this;
+    self.key = ko.observable();
+    self.name = ko.observable();
+    self.artist = ko.observable();
+    self.year = ko.observable();
+    self.thumb = ko.observable();
+    self.med = ko.observable();
+    self.audiofiles = ko.observableArray();
+    self.covers = ko.observableArray();
+
+    self.render = function( data, element ) {
+        self.key(data.key);
+        self.name(data.name);
+        self.artist(data.artist);
+        self.year(data.year);
+        self.thumb(data.thumb);
+        self.med(data.med);
+
+        $.getJSON( API_URI+self.key()+"/nodes", function( data ) {
+            self.audiofiles([]);
+            ko.utils.arrayPushAll(self.audiofiles, data.nodes );
+        });
+
+        ko.renderTemplate("serie-template", self, {}, element, "replaceChildren");
+        setTimeout( function() {
+            $('#gallery').lightGallery();
+        }, 2000 );
+    }
+}
+
 // ------------------------------------------------------------------------------------------------
 // --- Application View Model                                                                   ---
 // ------------------------------------------------------------------------------------------------
 function SquawkViewModel() {
     var self = this;
-    self.viewModel = new AlbumViewModel();
 
     //calculate the position of the element passed.
     var cumulativeOffset = function(element) {
@@ -182,14 +215,25 @@ function SquawkViewModel() {
         //TODO does not exist. $(".arrow-down").hide();
         $("#arrow"+_param.attr("id")).show(); //TODO create up and down arrows
         self.viewModel.render( data, $("#albumCollapse"+_index.col_id)[0] );
+        console.log( "node: " + data.key +", " + data.name + ", " + data.thumb );
     }
+
+    //event handlers
 
     //selected content
     self.nodes = ko.observableArray();
     ko.extenders.viewChange = function(target, option) {
         target.subscribe(function(newValue) {
-            console.log( "load nodes and sort key for: " + self.key() + ", target:"+ target() + ", option:" + option );
+            console.log( "load nodes and sort key for: " + self.key() + ", type: " + self.key() + ", target:"+ target() + ", option:" + option );
             if( option == "key" ) {
+
+                if( self.key() == 'album' ) {
+                    self.viewModel = new AlbumViewModel();
+                } else if( self.key() == 'serie' ) {
+                    self.viewModel = new SerieViewModel();
+                } else {
+                    console.log( "wrong type: " + self.key() + ", type: " + self.key() + ", target:"+ target() + ", option:" + option );
+                }
                 //get sort criteria
                 $.getJSON( API_URI+newValue+"/sort", function( data ) {
                     self.sortKeys([]);
@@ -212,17 +256,6 @@ function SquawkViewModel() {
         return target;
     };
 
-    //root_nodes
-    self.navigation_nodes = ko.observableArray();
-
-    //filter and order
-    self.key = ko.observable().extend( {viewChange: "key"} );
-    self.search = ko.observable( "" ).extend( {viewChange: "search"} );
-    self.order = ko.observable( false ).extend( {viewChange: "order"} );
-    self.orderStyle = ko.observable( "fa-sort-amount-asc" );
-    self.sort = ko.observable( "alpha" ).extend( {viewChange: "sort"} );
-    self.sortKeys = ko.observableArray();
-
     self.do_order = function() {
         self.order( !self.order() );
         if( self.order() ) {
@@ -243,6 +276,19 @@ function SquawkViewModel() {
     //the node list navigation
     self.node = ko.observable(); //todo remove
     self.page = ko.observable("album-page-widget"); //TODO remove
+
+    //root_nodes
+    self.navigation_nodes = ko.observableArray();
+
+    //filter and order
+    self.key = ko.observable().extend( {viewChange: "key"} );
+    self.search = ko.observable( "" ).extend( {viewChange: "search"} );
+    self.order = ko.observable( false ).extend( {viewChange: "order"} );
+    self.orderStyle = ko.observable( "fa-sort-amount-asc" );
+    self.sort = ko.observable( "alpha" ).extend( {viewChange: "sort"} );
+    self.sortKeys = ko.observableArray();
+
+    self.viewModel = new AlbumViewModel();
 
     //select item icon
     self.style = function (data, size ) {

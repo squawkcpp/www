@@ -1,90 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- link rel="icon" href="favicon.ico" -->
-    <title>Squawk Media Server</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Squawk Content Directory Server">
+      <meta name="author" content="squawkcpp@gmail.com">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/css/lightgallery.min.css"
-          integrity="sha256-6hdzBLI5YrM1ltRrsPdV0y2CsqGgLYCeNlLFFQoh7MY=" crossorigin="anonymous" />
-    <link href="/style.css" rel="stylesheet">
-    <!-- link href="http://vjs.zencdn.net/6.2.0/video-js.css" rel="stylesheet" -->
-</head>
+      <title>Squawk Content Directory Server</title>
 
-<body>
-<div class="container">
-    <div class="header clearfix">
-        <nav>
-        <div class="btn-group nav nav-pills float-right">
-            <div data-bind="component: {
-                name: 'search-widget',
-                params: { search: search }}"></div>
-            <div data-bind="component: {
-                name: 'sort-widget',
-                params: { sortKeys: sortKeys }}"></div>
-                <div data-bind="component: {
-                    name: 'order-widget',
-                    params: { order: order }}"></div>
-        </div></nav>
-        <path-widget params="value: path"></path-widget>
-    </div>
+      <!-- load CSS and font fiiles -->
+      <link href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+            integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+      <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/css/lightgallery.min.css"
+            integrity="sha256-6hdzBLI5YrM1ltRrsPdV0y2CsqGgLYCeNlLFFQoh7MY=" crossorigin="anonymous" />
+      <!-- Custom styles for this template -->
+      <link href="/squawk.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+          <a class="navbar-brand" href="#"><img src="/icons/squawk16.png"/></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto" data-bind="foreach: navigation_nodes">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bind="text: name, click: function() { $root.key( key ) }"></a>
+                </li>
+            </ul>
+            <form class="form-inline">
+               <input class="form-control form-control-sm" type="text" placeholder="Search"
+                      aria-label="Search" data-bind="jqAuto: { value: search, source: getOptions }">
+               <div data-bind="component: {
+                   name: 'sort-widget',
+                   params: { sortKeys: sortKeys }}"></div>
+                   <div data-bind="component: {
+                       name: 'order-widget',
+                       params: { order: order, style: orderStyle }}"></div>
+              </div>
+             </form>
+          </div>
+        </nav>
+
+        <div id="squawkContent" class="row container-fluid cds_content">
+            <!-- ko foreach: items -->
+            <div class="galleryItem" data-bind='click: function(data, event) { $root.items.gallery.expand(data, event, key ); }, attr: {id: key}'>
+                <a role="button" data-toggle="collapse" aria-expanded="false"
+                    data-bind='attr: {ariaControls: "albumCollapse"+key}'>
+                    <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+                    <span data-bind="text: artist"></span><span>/</span><span data-bind="text: name"></span>
+                    <!-- /ko -->
+                    <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+                      <img class="galleryImage" data-bind="attr: { src: API_URI+thumb}"><!-- span data-bind="text: name"/ --></img>
+                    <!-- /ko -->
+                </a>
+                <br/>
+                <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
+            </div>
+            <!-- /ko -->
+        </div>
+
+        <!-- Bootstrap core JavaScript -->
+        <script
+          src="https://code.jquery.com/jquery-3.2.1.min.js"
+          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+          crossorigin="anonymous"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+                integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+                integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/js/lightgallery.min.js"
+                integrity="sha256-yXJsrJUL9at6M9rBtYz0gJQFxux8nvKt0QwzqVkPTG4=" crossorigin="anonymous"></script>
+        <!-- Custom scripts for this template -->
+        <script src="/ko-gallery.js"></script>
+        <script src="/squawk3.js"></script>
+        <!-- script src="/gallery.js"></script -->
+    </body>
+
+<script type="text/html" id="album-template">
+<!-- div class="container-fluid squawkExpandable">
+<a href="#close-jump-1" class="expand__close"></a -->
+<div class="row expandableGridImage galleryHeight">
+<div class="col-md-6 squawkAlbumImage">
+    <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+    <!-- ul id="gallery" class="" data-bind="foreach: {data: covers}">
+        <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
+            <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}' -->
+            <!-- div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div -->
+            <!-- /a>
+        </li>
+    </ul -->
 </div>
 
-<root-widget params="nodes: rootNodes"></root-widget>
-    <div class="container" id="pager" data-bind="with: paginationModel">
-        <div data-bind="pagination: { currentPage: page, totalCount: total, pageSize: 60, maxPages: maxPages, directions: directions, boundary: boundary, text: text }"></div>
+<div class="col-md-6 albumContent galleryHeight">
+    <!-- div class="row">
+        <div class="col-md-12">
+            <h4 class="text-white" data-bind="text: name"/><span class="text-white" data-bind="text: artist"/><br/><span class="text-white" data-bind="text: year"/>
+        </div>
     </div>
 
-  <div class="container">
-    <div data-bind="component: {
-        name: $root.page,
-        params: { node: $root.node, nodes: $root.nodes }}">
-    </div>
-  </div>
-
-  <footer class="text-muted" id="browse">
-    <status-widget params="albums: albumsCount, nodes: nodesCount, version: version"></status-widget>
-    <a href="#" class="navbar-brand" data-bind="click: function() { $root.load('admin', '0') }">Admin</a>
-  </footer>
+    <div class="row songDiv">
+        <div class="col-md-12" -->
+            <table class="table table-inverse table-striped table-sm galleryTable galleryHeight">
+            <thead>
+            <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
+            <thead>
+            <tbody data-bind="foreach: {data: audiofiles}">
+            <tr>
+            <td data-bind="text: track"/>
+            <td data-bind="text: name"/>
+            <td data-bind="text: playlength"/>
+            <td data-bind="text: bitrate"/>
+            <td data-bind="text: samplerate"/>
+            <td data-bind="text: bps"/>
+            <td data-bind="text: channels"/>
+            </tr>
+            </tbody>
+            </table>
+        <!-- /div>
+    </div -->
 </div>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.min.js" integrity="sha256-ifihHN6L/pNU1ZQikrAb7CnyMBvisKG3SUAab0F3kVU=" crossorigin="anonymous"></script>
-    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
-            integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
-    <script src="/knockstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/js/lightgallery.min.js"
-            integrity="sha256-yXJsrJUL9at6M9rBtYz0gJQFxux8nvKt0QwzqVkPTG4=" crossorigin="anonymous"></script>
+<!-- /div -->
+</script>
 
-<!-- script src="http://sachinchoolur.github.io/lightGallery/static/js/prettify.js"></script>
-<script src="http://sachinchoolur.github.io/lightGallery/static/js/transition.js"></script>
-<script src="http://sachinchoolur.github.io/lightGallery/static/js/collapse.js"></script>
-<script src="http://sachinchoolur.github.io/lightGallery/lightgallery/js/lg-zoom.js"></script -->
-
-    <script src="squawk.js"></script>
-    <!-- script src="widgets/path.js"></script -->
-    <!-- script src="widgets/status.js"></script -->
-    <!-- script src="widgets/page_folder.js"></script -->
-    <!-- script src="widgets/album_page_widget.js"></script -->
-    <!-- script src="widgets/artist_page_widget.js"></script -->
-    <!-- script src="widgets/serie_page_widget.js"></script -->
-    <!-- script src="widgets/ebook_page_widget.js"></script -->
-    <!-- script src="widgets/movie_page_widget.js"></script -->
-    <script src="widgets/item.js"></script>
-    <script src="widgets/admin.js"></script>
-    <!-- script type="text/javascript" src="js/browse.js"></script -->
-  </body>
 </html>
