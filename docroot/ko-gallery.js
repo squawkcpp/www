@@ -12,17 +12,24 @@ ko.extenders.gallery = function(target, args) {
     target.gallery = props;
 
     props.loading = false;
-    props.itemSize = args.itemSize;
+    props.itemSize = ko.observable(160);
     props.numItemsPerPage = ko.observable();
-    props.firstHiddenIndex = ko.observable();
-    props.numItemsPerLine = ko.observable(6);
-    props.numLines = ko.observable();
-    props.firstVisibleIndex = ko.observable(0);
+    props.numItemsPerLine = ko.observable();
     props.itemsLoaded = ko.observable(0);
-
-    props.windowWidth = ko.observable(6);
+    props.windowWidth = ko.observable();
     props.windowHeight = ko.observable();
-    props.scrollY = ko.observable(0);
+    props.scrollY = ko.observable();
+    props.viewModel = ko.observable( args.viewModel );
+
+    props.reset = function( vm ) {
+        props.loading = false;
+        props.viewModel( vm );
+        props.itemsLoaded( 0 );
+        props.expand_last = -1;
+        //INIT PAGE
+        props.windowSize();
+        props.populateItems( props.numItemsPerPage );
+    };
 
     props.windowSize = ko.computed(function() {
         var w = window,
@@ -84,7 +91,7 @@ ko.extenders.gallery = function(target, args) {
         var _col = $("#"+node);
         do {
             _offset = cumulativeOffset( _col );
-            if( $( window ).width() <  _offset.left+(2*props.itemSize) ) {
+            if( $( window ).width() <  _offset.left+(2*props.itemSize() ) ) {
                 return _col.attr( "id" );
             } else {
                 _col = _col.nextAll('.galleryItem').first();
@@ -125,7 +132,6 @@ ko.extenders.gallery = function(target, args) {
     }
 
     props.expand = function(data, event, param) {
-
         var _index = props.calculate_expand_index( param );
         _param = $("#"+param);
 
@@ -142,11 +148,12 @@ ko.extenders.gallery = function(target, args) {
         $(".arrow-up").hide();
         $(".arrow-down").hide();
         $("#arrow"+_param.attr("id")).show(); //TODO create up and down arrows
-        args.viewModel.render( data, $("#galleryCollapse"+_index.col_id)[0] );
-        $(".galleryHeight").height( props.windowHeight() - ( props.windowHeight() / 3 ) - 100 );
+        props.viewModel().render( data, $("#galleryCollapse"+_index.col_id)[0] );
+        $(".cds_content").height( props.windowHeight() - ( props.windowHeight() / 3 ) - 100 );
     }
 
     //INIT PAGE
     props.windowSize();
     props.populateItems( props.numItemsPerPage );
+
 }

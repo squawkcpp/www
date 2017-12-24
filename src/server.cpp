@@ -31,31 +31,34 @@ int main( int argc, char* argv[] ) {
         ( PARAM_DOCROOT, "Path to the web application files.)", cxxopts::value<std::string>()->default_value("/usr/local/share/squawk-www"), "PATH" )
         ( "help", "Print help")
       ;
-    options.parse(argc, argv);
 
-    if( options.count( "help" ) ) {
+    auto result = options.parse(argc, argv);
+
+    if( result.count( "help" ) ) {
          std::cout << options.help({"", "Group"}) << std::endl;
          exit(0);
     }
 
-    std::string _ip, _port, _docroot;
-    if ( options.count( PARAM_LISTEN_ADDRESS ) )
-    { _ip = options[PARAM_LISTEN_ADDRESS].as<std::string>(); }
+    std::string _ip, _port, _docroot, _cds_uri;
+    if ( result.count( PARAM_LISTEN_ADDRESS ) )
+    { _ip = result[PARAM_LISTEN_ADDRESS].as<std::string>(); }
     else { _ip = "0.0.0.0"; }
-    if ( options.count( PARAM_HTTP_PORT ) )
-    { _port = options[PARAM_HTTP_PORT].as<std::string>(); }
+    if ( result.count( PARAM_HTTP_PORT ) )
+    { _port = result[PARAM_HTTP_PORT].as<std::string>(); }
     else { _port = "9000"; };
-    if ( options.count( PARAM_DOCROOT ) )
-    { _docroot = options[PARAM_DOCROOT].as<std::string>(); }
+    if ( result.count( PARAM_DOCROOT ) )
+    { _docroot = result[PARAM_DOCROOT].as<std::string>(); }
     else { _docroot = "/usr/local/share/squawk-www"; }
-    //TODO set cds uri
+    if ( result.count( PARAM_CDS_URI ) )
+    { _cds_uri = result[PARAM_CDS_URI].as<std::string>(); }
+    else { _cds_uri = ""; }
 
     //start server
     std::cout <<  "Start content directory server ({" << _ip << "}:{" << _port << "})" << std::endl;
 
     /** Setup and start the HTTP Server **/
     auto _web_server = std::shared_ptr< http::Server< http::HttpServer > >( new http::Server< http::HttpServer >( _ip, _port ) );
-    www::Server _server( _web_server, _docroot );
+    www::Server _server( _web_server, _docroot, _cds_uri );
 
     // register signal SIGINT and signal handler
     signal(SIGINT, signalHandler);
@@ -69,7 +72,16 @@ int main( int argc, char* argv[] ) {
 
 namespace www {
 Server::Server(std::shared_ptr< http::Server< http::HttpServer > > web_server, /** @param web_server the server to attach the API uri's. */
-               const std::string& docroot ) {
+               const std::string& docroot, const std::string& cds_uri ) {
+
+    /* path to the web gui files */
+    web_server->bind( http::mod::Match<>( "/config.js" ),
+                      http::mod::Exec([&cds_uri](http::Request&, http::Response& response ) -> http::http_status {
+                          response << "var API_URI=\"" << cds_uri << "\"\r\n";
+                           response.parameter ( http::header::CONTENT_TYPE, http::mime::mime_type ( http::mime::JS ) );
+                          response.parameter ( "Access-Control-Allow-Origin", "*" );
+                          return http::http_status::OK;
+                      }), http::mod::Http() );
 
     /* path to the web gui files */
     web_server->bind( http::mod::Match<>( "*" ),

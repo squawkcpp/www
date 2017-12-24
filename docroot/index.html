@@ -8,29 +8,34 @@
 
       <title>Squawk Content Directory Server</title>
 
-      <!-- load CSS and font fiiles -->
+      <!-- load CSS and font files -->
       <link href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css' rel='stylesheet' type='text/css'>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
             integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
       <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/css/lightgallery.min.css"
-            integrity="sha256-6hdzBLI5YrM1ltRrsPdV0y2CsqGgLYCeNlLFFQoh7MY=" crossorigin="anonymous" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.6/css/lightgallery.min.css"
+            integrity="sha256-8rfHbJr+ju3Oc099jFJMR1xAPu8CTPHU8uP5J3X/VAY=" crossorigin="anonymous" />
       <!-- Custom styles for this template -->
-      <link href="/squawk.css" rel="stylesheet">
+      <link href="/style.css" rel="stylesheet">
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: Red;">
           <a class="navbar-brand" href="#"><img src="/icons/squawk16.png"/></a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto" data-bind="foreach: navigation_nodes">
+            <ul class="navbar-nav mr-auto">
+                <!-- ko foreach: navigation_nodes -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-bind="text: name, click: function() { $root.key( key ) }"></a>
+                </li>
+                <!-- /ko -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bind="click: function() { $root.key( 'admin' ) }">admin</a>
                 </li>
             </ul>
             <form class="form-inline">
@@ -47,68 +52,106 @@
           </div>
         </nav>
 
-        <div id="squawkContent" class="row container-fluid cds_content">
-            <!-- ko foreach: items -->
-            <div class="galleryItem" data-bind='click: function(data, event) { $root.items.gallery.expand(data, event, key ); }, attr: {id: key}'>
-                <a role="button" data-toggle="collapse" aria-expanded="false"
-                    data-bind='attr: {ariaControls: "albumCollapse"+key}'>
-                    <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
-                    <span data-bind="text: artist"></span><span>/</span><span data-bind="text: name"></span>
-                    <!-- /ko -->
-                    <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
-                      <img class="galleryImage" data-bind="attr: { src: API_URI+thumb}"><!-- span data-bind="text: name"/ --></img>
-                    <!-- /ko -->
-                </a>
-                <br/>
-                <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
-            </div>
-            <!-- /ko -->
-        </div>
+        <div class="content"
+             data-bind="component: { name: $root.main, params: { key: key, sort: sort, order: order, search: search }}"></div>
 
         <!-- Bootstrap core JavaScript -->
-        <script
-          src="https://code.jquery.com/jquery-3.2.1.min.js"
-          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-          crossorigin="anonymous"></script>
-
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+                integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
                 integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
                 integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.4.0/js/lightgallery.min.js"
-                integrity="sha256-yXJsrJUL9at6M9rBtYz0gJQFxux8nvKt0QwzqVkPTG4=" crossorigin="anonymous"></script>
-        <!-- Custom scripts for this template -->
-        <script src="/ko-gallery.js"></script>
-        <script src="/squawk3.js"></script>
-        <!-- script src="/gallery.js"></script -->
-    </body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.6/js/lightgallery-all.min.js"
+                integrity="sha256-LHSheKZqtkl7GFUnh+pcbssy86PGFtQaFjHgJXC7zYE=" crossorigin="anonymous"></script>
+        <script src="/knockout-jqAutocomplete.min.js"></script>
+
+<script type="text/html" id="admin-template">
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <h4>configure content directory:</h4>
+      <form class="navbar-form navbar-left" role="form">
+          <div class="form-group">
+              <p><input type="text" class="form-control" placeholder="http ip"
+              required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" data-bind="value: httpIp">
+              <br/>http ip address</p>
+              <p><input type="text" class="form-control" placeholder="http port"
+              required pattern="^([0-9]*)$" data-bind="value: httpPort">
+          </div>
+          <button type="submit" class="btn btn-default">Rescan</button>
+          <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+  </div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+</div>
+</script>
+
+<script type="text/html" id="gallery-template">
+<div class="galleryContainer">
+    <div class="galleryRow row">
+        <!-- ko foreach: items -->
+        <div class="galleryItem" data-bind='click: function(data, event) { $parent.items.gallery.expand( data, event, key ); }, attr: {id: key}'>
+            <a role="button" data-toggle="collapse" aria-expanded="false"
+                data-bind='attr: {ariaControls: "albumCollapse"+key}'>
+                <!-- ko if: $data.hasOwnProperty("thumb") == 0 -->
+                <span data-bind="text: name"></span>
+                <!-- /ko -->
+                <!-- ko if: $data.hasOwnProperty("thumb") == 1 -->
+                  <img class="galleryImage" data-bind="attr: { src: API_URI+thumb}"></img>
+                <!-- /ko -->
+            </a>
+            <div class="arrow-up" data-bind='attr: {id: "arrow"+key}'></div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+</script>
+
+<script type="text/html" id="artist-template">
+<div class="galleryContainer">
+    <div class="galleryRow row">
+        <!-- ko foreach: items -->
+        <a href="#" data-bind="text: name"></a>
+        <!-- /ko -->
+    </div>
+</div>
+</script>
 
 <script type="text/html" id="album-template">
-<!-- div class="container-fluid squawkExpandable">
-<a href="#close-jump-1" class="expand__close"></a -->
-<div class="row expandableGridImage galleryHeight">
-<div class="col-md-6 squawkAlbumImage">
-    <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
-    <!-- ul id="gallery" class="" data-bind="foreach: {data: covers}">
-        <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
-            <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}' -->
-            <!-- div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div -->
-            <!-- /a>
-        </li>
-    </ul -->
-</div>
-
-<div class="col-md-6 albumContent galleryHeight">
-    <!-- div class="row">
-        <div class="col-md-12">
-            <h4 class="text-white" data-bind="text: name"/><span class="text-white" data-bind="text: artist"/><br/><span class="text-white" data-bind="text: year"/>
-        </div>
+<div class="row expandableGridImage cds_content">
+    <div class="col-md-6 squawkAlbumImage">
+        <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+        <!-- ul id="gallery" class="" data-bind="foreach: {data: covers}">
+            <li class="" data-bind='attr: {"data-src": API_URI+"/res/"+key+ext}'>
+                <a href="#"><img class="img-responsive" data-bind='attr: {src: API_URI+"/img/tn_"+key+".jpg"}' -->
+                <!-- div class="demo-gallery-poster"><img data-bind='attr: {src: "http://sachinchoolur.github.io/lightGallery/static/img/zoom.png"}'></div -->
+                <!-- /a>
+            </li>
+        </ul -->
     </div>
 
-    <div class="row songDiv">
-        <div class="col-md-12" -->
-            <table class="table table-inverse table-striped table-sm galleryTable galleryHeight">
+    <div class="col-md-6 albumContent galleryHeight">
+        <h4 class="text-white"><span data-bind="text: artist"/>&nbsp;-&nbsp;<span data-bind="text: name"/></h4>
+        <!-- div data-bind="component: {
+            name: 'tag-widget',
+            params: { key: $root.key }}"></div>
+        </div -->
+        <table class="table table-inverse table-striped table-sm galleryTable galleryHeight">
             <thead>
             <tr><th>#</th><th>Title</th><th>length</th><th>Bitrate</th><th>Samplerate</th><th>Bps.</th><th>Channels</th></tr>
             <thead>
@@ -123,11 +166,84 @@
             <td data-bind="text: channels"/>
             </tr>
             </tbody>
-            </table>
-        <!-- /div>
-    </div -->
+        </table>
+    </div>
 </div>
-<!-- /div -->
 </script>
 
+<script type="text/html" id="movie-template">
+<div class="row expandableGridImage galleryHeight">
+
+    <div style="display:none;" id="videoGallery">
+        <video class="lg-video-object lg-html5" controls preload="none">
+            <source data-bind='attr: {src: API_URI+uri()}' type="video/webm">
+             Your browser does not support HTML5 video.
+        </video>
+    </div>
+
+    <ul id="html5-videos">
+      <li data-bind='attr: {"data-poster": API_URI+backdrop(), "data-sub-html": name()}' data-html="#videoGallery" >
+          <img data-bind='attr: {src: API_URI+med()}' />
+      </li>
+    </ul>
+
+    <div class="col-md-6 squawkAlbumImage">
+        <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+    </div>
+
+    <div class="col-md-6 albumContent galleryHeight">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-white" data-bind="text: name"/><br/>
+                <span class="text-white" data-bind="text: comment"/>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script type="text/html" id="serie-template">
+<div class="row expandableGridImage galleryHeight">
+    <div class="col-md-6 squawkAlbumImage">
+        <img class="img-fluid" data-bind='attr: {src: API_URI+med()}'></img>
+    </div>
+
+    <div class="col-md-6 albumContent galleryHeight">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-white" data-bind="text: name"/><br/><span class="text-white" data-bind="text: comment"/>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script type="text/html" id="ebook-template">
+<div class="row expandableGridImage galleryHeight">
+    <div class="col-md-6 squawkAlbumImage">
+        <img class="img-fluid" data-bind='attr: {src: API_URI+thumb()}'></img>
+    </div>
+
+    <div class="col-md-6 albumContent galleryHeight">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-white" data-bind="text: name"/><br/><span class="text-white" data-bind="text: comment"/>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script src="/config.js"></script>
+<script src="/ko-gallery.js"></script>
+<script src="/co-admin.js"></script>
+<script src="/co-album.js"></script>
+<script src="/co-artist.js"></script>
+<script src="/co-ebook.js"></script>
+<script src="/co-gallery.js"></script>
+<script src="/co-movie.js"></script>
+<script src="/co-serie.js"></script>
+<script src="/component_tag.js"></script>
+<script src="/squawk.js"></script>
+</body>
 </html>
