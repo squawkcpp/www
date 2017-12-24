@@ -29,26 +29,19 @@ include(cmake/external/asio.cmake)
 include(cmake/external/fmt.cmake)
 include(cmake/external/lightning.cmake)
 include(cmake/external/cxxopts.cmake)
-include(cmake/external/redox.cmake)
 include(cmake/external/spdlog.cmake)
 
 SET( INCLUDES ${INCLUDES} ${GTEST_INCLUDE_DIR} ${FMT_INCLUDE_DIR}
             ${RE2_INCLUDE_DIR} ${ASIO_INCLUDE_DIR} ${LIGHTNING_INCLUDE_DIR}
-            ${CXXOPTS_INCLUDE_DIR} ${REDOX_INCLUDE_DIR} ${SPDLOG_INCLUDE_DIR})
+            ${CXXOPTS_INCLUDE_DIR} ${SPDLOG_INCLUDE_DIR})
 
 # -------------------------------------------------------------------------
 # -----------------------   Find Dependencies       -----------------------
 # -------------------------------------------------------------------------
 find_package(Boost 1.54.0 COMPONENTS filesystem system)
-#find_package(CURLpp REQUIRED)
-find_package(CURL REQUIRED)
-find_package(OpenSSL REQUIRED)
-find_package(Hiredis)
-find_package(Libev)
 
 SET( LIBS ${LIBS}
-    ${Boost_LIBRARIES} ${CURL_LIBRARIES}
-    ${OPENSSL_LIBRARIES} ${LIBHIREDIS_LIBRARIES} ${LIBEV_LIBRARIES}
+    ${Boost_LIBRARIES}
     -lpthread -luuid -lm -lz
 )
 
@@ -65,7 +58,7 @@ add_custom_target(www SOURCES ${WWWFiles})
 aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
 include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
 add_executable(squawk-www ${WWW_SOURCES})
-target_link_libraries(squawk-www cxxopts re2 lightning redox fmt spdlog asio gtest ${LIBS})
+target_link_libraries(squawk-www cxxopts re2 lightning fmt spdlog asio gtest ${LIBS})
 #TODO remove gtest, it is required because of lightning
 
 install(TARGETS squawk-www RUNTIME DESTINATION bin)
