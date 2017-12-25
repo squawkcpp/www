@@ -26,16 +26,10 @@ ko.components.register('gallery-widget', {
                             callback();
                         }
                     );
-                    //get sort criteria
-    //                $.getJSON( API_URI+self.key()+"/sort", function( data ) {
-    //                    self.sortKeys([]);
-    //                    ko.utils.arrayPushAll(self.sortKeys, data);
-    //                });
-
-                    },
-                    viewModel: new AlbumViewModel()
-                }
-            });
+                },
+                viewModel: new AlbumViewModel()
+            }
+        });
     },
     template:  { element: "gallery-template" }
 });

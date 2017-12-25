@@ -8,7 +8,7 @@ sudo docker exec build_www cmake -H/repo -B/build -G Ninja -DCMAKE_MAKE_PROGRAM=
 sudo docker exec build_www cmake --build /build
 sudo docker exec build_www cmake --build /build --target package
 
-sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=master -t www .
+sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=master -t squawk-www .
 
 sudo docker rm -f build_www
 sudo rm -rf build

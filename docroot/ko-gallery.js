@@ -21,9 +21,9 @@ ko.extenders.gallery = function(target, args) {
     props.scrollY = ko.observable();
     props.viewModel = ko.observable( args.viewModel );
 
-    props.reset = function( vm ) {
+    props.reset = function() {
         props.loading = false;
-        props.viewModel( vm );
+//        props.viewModel( vm );
         props.itemsLoaded( 0 );
         props.expand_last = -1;
         //INIT PAGE
@@ -45,7 +45,7 @@ ko.extenders.gallery = function(target, args) {
 
     // detect resize
     $(window).resize(function() {
-        windowSize();
+        props.windowSize();
     });
 
     // tell infinte-scroll about the current scroll position

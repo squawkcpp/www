@@ -18,28 +18,13 @@ ko.components.register('order-widget', {
     template: '<span class="fa" aria-hidden="true" data-bind="click: function() { $root.do_order() }, css: style"></span>'
 });
 
-
-// ------------------------------------------------------------------------------------------------
-// --- Gallery View Models                                                                      ---
-// ------------------------------------------------------------------------------------------------
-/* function ArtistViewModel() {
-    var self = this;
-    self.key = ko.observable();
-    self.name = ko.observable();
-    self.render = function( data, element ) {
-        self.key(data.key);
-        self.name(data.name);
-    }
-} */
-
-
 // ------------------------------------------------------------------------------------------------
 // --- Application View Model                                                                   ---
 // ------------------------------------------------------------------------------------------------
+
 function SquawkViewModel() {
     var self = this;
 
-    self.main = ko.observable( 'gallery-widget' );
     ko.extenders.viewChange = function(target, option) {
         console.log( "view change: " + option );
         target.subscribe(function(newValue) {
@@ -49,33 +34,21 @@ function SquawkViewModel() {
                 self.main( 'admin-widget' );
             } else if( self.key() == 'artist' ) {
                 self.main( 'artist-widget' );
-            } else self.main( 'gallery-widget' );
-
-//            self.items.removeAll();
-
-//            if( self.key() == "artist" ) self.viewModel( "artist-gallery-template" );
-//            else self.viewModel( "album-gallery-template" );
-
-//            if( self.key() == "album" ) {
-//                self.items.gallery.reset( new AlbumViewModel() );
-//            } else if( self.key() == "artist" ) {
-//                self.items.gallery.reset( new ArtistViewModel() );
-//            } else if( self.key() == "ebook" ) {
-//                self.items.gallery.reset( new EBookViewModel() );
-//            } else if( self.key() == "photo" ) {
-//                self.items.gallery.reset( new PhotoViewModel() );
-//            } else if( self.key() == "movie" ) {
-//                self.items.gallery.reset( new MovieViewModel() );
-//            } else if( self.key() == "serie" ) {
- //               self.items.gallery.reset( new SerieViewModel() );
-//            } else if( self.key() == "storage" ) {
-//                self.items.gallery.reset( new StorageViewModel() );
-//            }
+            } else {
+                //get sort criteria
+                $.getJSON( API_URI+self.key()+"/sort", function( data ) {
+                    self.sortKeys([]);
+                    ko.utils.arrayPushAll(self.sortKeys, data);
+                });
+                self.main( 'gallery-widget' );
+                self.main.valueHasMutated();
+            }
         });
     };
 
     self.key = ko.observable( "album" ).extend( {viewChange: "key"} );
     self.navigation_nodes = ko.observableArray();
+    self.main = ko.observable( 'gallery-widget' );
 
     self.sort = ko.observable( "alpha" ).extend( {viewChange: "sort"} );
     self.sortKeys = ko.observableArray();
