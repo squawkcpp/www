@@ -3,7 +3,7 @@ FROM nfnty/arch-mini
 
 ARG WWW_TAG_VERSION=master
 
-ADD build/www_master.tar.gz /
+ADD build/www_$WWW_TAG_VERSION.tar.gz /
 
 ADD docker/www.sh /www.sh
 RUN chmod +x /*.sh
