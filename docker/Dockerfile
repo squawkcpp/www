@@ -1,12 +1,9 @@
 # Dockerfile to install web server (WWW)
-FROM base/archlinux:latest
+FROM nfnty/arch-mini
 
 ARG WWW_TAG_VERSION=master
 
-RUN pacman -Syu --noconfirm && \
-    pacman --noconfirm -S boost make
-
-ADD build/www_$WWW_TAG_VERSION.tar.gz /
+ADD build/www_master.tar.gz /
 
 ADD docker/www.sh /www.sh
 RUN chmod +x /*.sh
