@@ -1,5 +1,5 @@
 # Dockerfile to install web server (WWW)
-FROM nfnty/arch-mini
+FROM busybox:musl
 
 ARG WWW_TAG_VERSION=master
 

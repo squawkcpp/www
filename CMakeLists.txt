@@ -20,17 +20,22 @@ find_package (Threads REQUIRED)
 
 link_libraries("-static")
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
+add_definitions( -DHTTP_BUFFER_SIZE=4096 -DHTTP_CLIENT_TIMEOUT=5
+                 -DHTTP_SERVER_THREAD_POOL_SIZE=10 -DASIO_STANDALONE )
+
 # ---------------------   External Dependencies       ---------------------
 include(ExternalProject)
-include(cmake/external/re2.cmake)
 include(cmake/external/gtest.cmake)
+include(cmake/external/re2.cmake)
 include(cmake/external/asio.cmake)
 include(cmake/external/lightning.cmake)
 include(cmake/external/cxxopts.cmake)
-
-SET( INCLUDES ${INCLUDES} ${GTEST_INCLUDE_DIR} ${FMT_INCLUDE_DIR}
-            ${RE2_INCLUDE_DIR} ${ASIO_INCLUDE_DIR} ${LIGHTNING_INCLUDE_DIR}
-            ${CXXOPTS_INCLUDE_DIR})
 
 # -----------------------   GUI support             -----------------------
 
@@ -43,10 +48,12 @@ add_custom_target(www SOURCES ${WWWFiles})
 # -----------------------   Compile Binary          -----------------------
 
 aux_source_directory( ${PROJECT_SOURCE_DIR}/src WWW_SOURCES )
-include_directories(${ROOT} ${INCLUDES} ${GTEST_INCLUDE_DIR})
+include_directories(${ROOT} ${INCLUDES} ${RE2_INCLUDE_DIR}
+                    ${ASIO_INCLUDE_DIR} ${LIGHTNING_INCLUDE_DIR}
+                    ${CXXOPTS_INCLUDE_DIR}
+)
 add_executable(squawk-www ${WWW_SOURCES})
-target_link_libraries(squawk-www cxxopts re2 lightning asio gtest Threads::Threads ${LIBS})
-#TODO remove gtest, it is required because of lightning
+target_link_libraries(squawk-www cxxopts re2 lightning asio Threads::Threads ${LIBS})
 
 install(TARGETS squawk-www RUNTIME DESTINATION bin)
 
@@ -60,24 +67,8 @@ SET(CPACK_GENERATOR "TGZ")
 SET(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 1)
 SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 
-if(WWW_TAG_VERSION MATCHES "^([0-9]+)[.]([0-9]+)[.]([0-9]+)$" )
-    string(REPLACE "." ";" WWW_TAG_VERSION_STRING ${WWW_TAG_VERSION})
-    list(GET WWW_TAG_VERSION_STRING 0 MAJOR_VERSION)
-    list(GET WWW_TAG_VERSION_STRING 1 MINOR_VERSION)
-    list(GET WWW_TAG_VERSION_STRING 2 PATCH_VERSION)
-else()
-    SET(MAJOR_VERSION "0")
-    SET(MINOR_VERSION "0")
-    SET(PATCH_VERSION "0")
-endif()
-
-SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
-SET(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
-SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}")
-
 SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${WWW_TAG_VERSION}")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${WWW_TAG_VERSION}")
 INCLUDE(CPack)
 
 ENDIF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
-
