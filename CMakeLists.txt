@@ -8,7 +8,6 @@ project( www )
 # -----------------------   Options and Parameters  -----------------------
 
 SET(WWW_TAG_VERSION "master" CACHE STRING "The tagged version.")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -31,16 +30,13 @@ add_definitions( -DHTTP_BUFFER_SIZE=4096 -DHTTP_CLIENT_TIMEOUT=5
 
 # ---------------------   External Dependencies       ---------------------
 include(ExternalProject)
-include(cmake/external/gtest.cmake)
-include(cmake/external/re2.cmake)
-include(cmake/external/asio.cmake)
-include(cmake/external/lightning.cmake)
-include(cmake/external/cxxopts.cmake)
+include(cmake/gtest.cmake)
+include(cmake/re2.cmake)
+include(cmake/asio.cmake)
+include(cmake/lightning.cmake)
+include(cmake/cxxopts.cmake)
 
 # -----------------------   GUI support             -----------------------
-
-FILE(GLOB_RECURSE HeaderFiles "${PROJECT_SOURCE_DIR}/src/*.h")
-add_custom_target(www_headers SOURCES ${HeaderFiles})
 
 FILE(GLOB_RECURSE WWWFiles "${PROJECT_SOURCE_DIR}/docroot/*")
 add_custom_target(www SOURCES ${WWWFiles})
