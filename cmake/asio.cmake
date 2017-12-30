@@ -1,5 +1,3 @@
-include(ExternalProject)
-
 ExternalProject_Add(
   asio_master
   URL "https://github.com/chriskohlhoff/asio/archive/master.zip"

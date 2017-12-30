@@ -1,9 +1,9 @@
 # -------------------------------------------------------------------------
-# Build media server with html gui.
+# Build media server html gui.
 # -------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.3)
 
-project( www )
+project( squawk-www )
 
 # -----------------------   Options and Parameters  -----------------------
 
@@ -30,7 +30,6 @@ add_definitions( -DHTTP_BUFFER_SIZE=4096 -DHTTP_CLIENT_TIMEOUT=5
 
 # ---------------------   External Dependencies       ---------------------
 include(ExternalProject)
-include(cmake/gtest.cmake)
 include(cmake/re2.cmake)
 include(cmake/asio.cmake)
 include(cmake/lightning.cmake)
@@ -48,14 +47,14 @@ include_directories(${ROOT} ${INCLUDES} ${RE2_INCLUDE_DIR}
                     ${ASIO_INCLUDE_DIR} ${LIGHTNING_INCLUDE_DIR}
                     ${CXXOPTS_INCLUDE_DIR}
 )
-add_executable(squawk-www ${WWW_SOURCES})
-target_link_libraries(squawk-www cxxopts re2 lightning asio Threads::Threads ${LIBS})
+add_executable(${PROJECT_NAME} ${WWW_SOURCES})
+target_link_libraries(${PROJECT_NAME} cxxopts re2 lightning asio Threads::Threads ${LIBS})
 
-install(TARGETS squawk-www RUNTIME DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
 # -----------------------   Generate Package        -----------------------
 IF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/docroot/ DESTINATION share/squawk-www )
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/docroot/ DESTINATION share/${PROJECT_NAME} )
 
 INCLUDE(InstallRequiredSystemLibraries)
 SET(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")

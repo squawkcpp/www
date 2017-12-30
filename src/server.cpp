@@ -23,7 +23,7 @@ void signalHandler( int signum ) {
 
 int main( int argc, char* argv[] ) {
     //parse args
-    cxxopts::Options options("Squawk upnp cli", "Command line interface for the squawk upnp media server.");
+    cxxopts::Options options("Squawk www cli", "Command line interface for the squawk www media server gui.");
     options.add_options()            
         ( PARAM_LISTEN_ADDRESS, "The the address for the http server.", cxxopts::value<std::string>()->default_value("0.0.0.0"), "IP" )
         ( PARAM_HTTP_PORT, "Port of the web server.", cxxopts::value<std::string>()->default_value("9000"), "PORT" )

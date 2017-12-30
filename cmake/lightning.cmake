@@ -1,5 +1,3 @@
-include(ExternalProject)
-
 ExternalProject_Add(
   lightning_master
   URL "https://github.com/lightningcpp/lightningcpp/archive/master.zip"

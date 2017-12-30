@@ -6,7 +6,6 @@
 
 ExternalProject_Add(
   google_re2
-  DEPENDS googletest
   URL "https://github.com/google/re2/archive/master.zip"
   INSTALL_COMMAND ""
   UPDATE_COMMAND ""
