@@ -1,0 +1,12 @@
+[requires]
+Asio/1.11.0@bincrafters/stable
+Re2/latest@conan-cpp/stable
+cxxopts/master@signal9/stable
+lightningcpp/master@conan-cpp/latest 
+
+[generators]
+cmake
+txt
+
+[options]
+Re2:shared=False
