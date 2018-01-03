@@ -2,14 +2,20 @@
 
 set -e
 
-sudo docker run -it -v $(pwd):/repo -v $(pwd)/.build:/build spielhuus/toolchain /bin/bash -c 'cd /build && \
-	conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan && \
-	conan remote add conan-cpp https://api.bintray.com/conan/squawkcpp/conan-cpp && \
-	conan install /repo --build=missing -s compiler.libcxx=libstdc++11 && \
-	cmake -H/repo -B/build -G Ninja -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DWWW_TAG_VERSION=master
-	cmake --build /build && \
-	cmake --build /build --target package'
+IMAGE=spielhuus/toolchain
+TAG=`if [ -z "$2" ]; then echo "master"; else echo "$2" ; fi`
+PID=$(sudo docker run -itd -v $(pwd):/repo -v $(pwd)/.build:/build $IMAGE /bin/sh)
+echo "build squawk-www tag:$TAG, image:$PID"
 
-sudo docker build -f docker/Dockerfile -t squawk-www .
+DOCKER_EXEC="sudo docker exec $PID /bin/sh -c"
 
-sudo rm -rf .build
+$DOCKER_EXEC "cd build && conan install /repo --build=missing -s compiler.libcxx=libstdc++11"
+$DOCKER_EXEC "cmake -H/repo -B/build -G Ninja -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -Dbuild_tests=on -Dbuild_example_server=on -Dbuild_documentation=on -WWW_TAG_VERSION=$TAG"
+$DOCKER_EXEC "cmake --build /build"
+#$DOCKER_EXEC "cmake --build /build --target test"
+#$DOCKER_EXEC "cmake --build /build --target doc"
+$DOCKER_EXEC "cmake --build /build --target package"
+
+sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=$TAG -t squawk-www .
+
+sudo docker rm -f $PID

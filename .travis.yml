@@ -6,26 +6,18 @@ env:
   global:
     - secure: "gMIZ9+GDpaVmUi7CwSiwWPDBUfpcMfO4z5ABZtef1s9nSemjIQVdX2SZWyAyILZv7r37rvo5xPP/ZADjjME1hRBLrA5Q8qJz5nUieAkyJr7t0VNSH0znOxyK9v0XbPUAa/IcMCAbRrXnJ37hczZVbxvX5Y5xFFy10LXVV5E0nr8cQOqR5QLfrCLHRXPxO7jk1Jzr3r16BQ4L4PWB+KEVOukR9tCjWCzLivCrWt9hIbk59ChJR9d0eE02Kig9hWBW1fUylQ8jLF5nRi+3dFeBo0h7jDSP+2OiRpQRdbi2L6C8AV/mH1f/Oj7H+9JbA5qp0AGfh70nqro9ikKf+1DEA3Km6+ZKiR6Ak8FiL54FkyUhwTuyoRvi1uBl/gipcHq1clpkjXPYdS6CI9QbzKdxh1fwgIW62bF9ntb6igrObxpIVO7BfoUf5glJlqGyNj5teicvBTxRYvRv+hTWMNwFkWeRUp/xZ2XiaEd/TPVPxDJeiYvUJ+N54QUAhYTpFmUeDYg2pHDYVma5DMFk2TRHAHqcE88eilcOxtVHkrPyroVZ+jW1EN+cFGs/BMqJkrN4bt3SOcJv+n/RyfvGD0CBM4vj6JOZSvpA2bysPuyx+7DTwemOxAYXJLRgbOucPcqwmzRcvzxQa2H2Zql7gOlcBHwguVevX0bznpMldAK4Nyw=" # DOCKER_USER
     - secure: "b7bKT8JzBTiQzIYo05zffrOYjTQKIG4jC5G5HemCZxTSj1x5Sl6H1Z7LcxTyv/LwRcsvchppO8y3xoESr+PUkP9FbQoGf3gJ+x++h1EHEIouKM1JH/tMHPlT37B0CreIeUCPxVsXBTJDvkbnspJRm7WkwOOJLw9lohG6tpS9J37IdFqekM46VvKCpLJ2vPsTcsbXESpj17/xXGrN26RI3aB67GBxwl18lI+7kWezIj0u/sMUGRzmIVNNoGnKtV7m2Xro2/Dh9diNNGZgYPnG+a4hi3Z+Y/hM5b1utMOCF1dj43b+ESP2S1uyJkt4jN5tV6HU03vDgl29jSC+rThUqYOtuflFeLJtdMskVy6qjx7OWTKm1C+WApj7PxpYAOj1xLlpJGxDlViAuWWEJqVQW5BRE17mXf0Xq4qeFBDbIiIoAzbIxN1cSVqOwnh8PY/an1qpcpfXZIBn3blO2M7gvh4UIKEUSVLLEArfODWbJu7TF8FnapSNv/l+TQl0qepUzLZPzmGG5QvDGlm4sZ90BApJRud0k5icGVt5q/IRHo3h3tuSS2bRwnWod0WPcO8BWDQxOQZc+2qDhWwqFBpllXxpZaUhPocl/vgRDSr3RwVwlnlCVwcEUquhjszqra7lI4gBxeC6K6L4oMVXD42FgrUuOdXbjoTDANBeDX1Ekgk=" # DOCKER_PASS
+    - secure: q1K/p4qQQl2nceUb878ue3BNAPZDjBv5xPWVgtyefSV0isYv+0ZFtBttZVwojPFuS3zJtU8KtHomD/WjnniShGkI4V4QoTsM/4mBRXcoJdMv/pib9NLyNp2zFn9o16Rz1ZSMSkzqWsPASq9Pp1vJxSa2pmYjZ7enLCGXzOFuReVUPXtoaum6wUCAqEgwb/RGxcptz/eBATp4G5CkxSLFkRnZV/f+T3uxfmvCQb/FSoWvKDcHXtjDb2aumpFcecQ0eKXlzTprEnXV0fR8BzDmOQ1sJbYya58LLPnECFHJS2t5iwfAyvLsCrPGidRZBDr3p3fUF3rqWYLUjgwNlKnG6fe7mY9IqYuZzNADpLUTg/lH9S6dgjV4ioilX5wiaPc4fgwQVyLW6q611LBnbf20obc3o74DHjOhl53N+6Bl6Jnj9MtmsEfGqQgvGaMy/guQaNGTBHNVOaLbNRXCDED6g14Q1j+zYcGnFn/lD1Kuw9bJGmlBDVex9VziO/onXAvGh+jr5mKI/9Ir2Pu53BsmC7p3YMKXK585qR0X8LD9WIqnquCl915qVJBSC1OD35P//d2M4EDbfRs2cmN70+T44nuDm558gSFk6K7RfLD5IDdzEjd18vfA15V80AAhdpm6j/5po1IcwOq3vS9+EqYCf5ae4JNUVmI/FAqsahAQTHI= #bintray key
     - COMMIT=${TRAVIS_COMMIT::8}
 before_install:
-  - mkdir $(pwd)/build
-  - docker pull spielhuus/clang:latest
-  - sudo docker run -itd -v $(pwd)/build:/build -v $(pwd)/www:/repo --name conan_build spielhuus/toolchain /bin/bash
-  - sudo docker exec conan_build /bin/bash -c "git clone https://github.com/squawkcpp/www.git /repo"
-  - sudo docker exec conan_build /bin/bash -c "conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan"
-  - sudo docker exec conan_build /bin/bash -c "conan remote add conan-cpp https://api.bintray.com/conan/squawkcpp/conan-cpp"
-  - sudo docker exec conan_build /bin/bash -c "cd /build && conan install /repo --build=missing -s compiler.libcxx=libstdc++11"
-
+  - sudo git clone https://github.com/squawkcpp/www.git /repo
 script:
-  - sudo docker exec conan_build cmake -H/repo -B/build -B/build -G Ninja -DWWW_TAG_VERSION=$TRAVIS_BRANCH
-  - sudo docker exec conan_build cmake --build /build
-  - sudo docker exec conan_build cmake --build /build --target package
+  sudo /bin/bash -c "cd /repo && /bin/bash build.sh $BINTRAY_KEY $TRAVIS_BRANCH"
 
 deploy:
   provider: releases
   api_key:
     secure: "MfDf+yqW8oQffPx7KB5x+0jlTvbRGkNlIsJ+jJbQFvKQCc0ahJzktywFfj6hG7tGt/CIl0i6CcGlqEr/sOHP1SigyWMttNcRKaamIP9g+ydWdPKuKkXHhcA4AGj3Q2M0l0z6yfeD8lEB1+lK9Tt5yf5ghcGbNv3DarqwQqYx08WL/LtTEOYjlnVJbTgqyoiF3exYZBveX8KLheJYFvXzjLXiHPRD+azqnwwGn7COeM2FQ1AfN4CRz7Cn85EJOwP69B7ugcc6GLqhPnj2khtUs6eZhJ0X/Xij5UMAHTXbxRD4I4HL410Rkp/Xs4I3z7nRiJtJbsRIntfsEYXW63ssjjO83Ilhl/S6O1P7RvxHJ4L/RyY40MR1ZkxZoy471LtJmTgA3tK81NRc3CfqG0+SaOyLEag6tmdalYs+0ItYjAICOViwslf7nT3ayTFEAFyTiu56wyrLC6utHPYalVWbwMolCTya51wVunn7NHe+z1Ga3t198Ew3W9l6YXjy7nT9xM2484hkLyW1IdVun5smHvu2jPCJOyo8nq/09FXQi/6YKdFRW0Vf/Jjod91LPqCRLX+KyBQyd0vEkBVRv49qD7x1lP5QU+B04tEMZsxYDdOv7jUfLmL7nyw0skvflRCv/GAQ3Tzavo5tVmivMUi5EvUGpumhsGHL/yIQZN3gWs0="
-  file: '$(pwd)/build/squawk-www_$TRAVIS_BRANCH.tar.gz'
+  file: '/.build/squawk-www_$TRAVIS_BRANCH.tar.gz'
   skip_cleanup: true
   on:
     tags: true
