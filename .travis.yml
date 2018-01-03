@@ -17,7 +17,7 @@ deploy:
   provider: releases
   api_key:
     secure: "MfDf+yqW8oQffPx7KB5x+0jlTvbRGkNlIsJ+jJbQFvKQCc0ahJzktywFfj6hG7tGt/CIl0i6CcGlqEr/sOHP1SigyWMttNcRKaamIP9g+ydWdPKuKkXHhcA4AGj3Q2M0l0z6yfeD8lEB1+lK9Tt5yf5ghcGbNv3DarqwQqYx08WL/LtTEOYjlnVJbTgqyoiF3exYZBveX8KLheJYFvXzjLXiHPRD+azqnwwGn7COeM2FQ1AfN4CRz7Cn85EJOwP69B7ugcc6GLqhPnj2khtUs6eZhJ0X/Xij5UMAHTXbxRD4I4HL410Rkp/Xs4I3z7nRiJtJbsRIntfsEYXW63ssjjO83Ilhl/S6O1P7RvxHJ4L/RyY40MR1ZkxZoy471LtJmTgA3tK81NRc3CfqG0+SaOyLEag6tmdalYs+0ItYjAICOViwslf7nT3ayTFEAFyTiu56wyrLC6utHPYalVWbwMolCTya51wVunn7NHe+z1Ga3t198Ew3W9l6YXjy7nT9xM2484hkLyW1IdVun5smHvu2jPCJOyo8nq/09FXQi/6YKdFRW0Vf/Jjod91LPqCRLX+KyBQyd0vEkBVRv49qD7x1lP5QU+B04tEMZsxYDdOv7jUfLmL7nyw0skvflRCv/GAQ3Tzavo5tVmivMUi5EvUGpumhsGHL/yIQZN3gWs0="
-  file: '/.build/squawk-www_$TRAVIS_BRANCH.tar.gz'
+  file: '/build/squawk-www_$TRAVIS_BRANCH.tar.gz'
   skip_cleanup: true
   on:
     tags: true
