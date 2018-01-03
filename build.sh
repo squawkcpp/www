@@ -3,7 +3,7 @@
 set -e
 
 IMAGE=spielhuus/toolchain
-TAG=`if [ -z "$2" ]; then echo "master"; else echo "$2" ; fi`
+TAG=`if [ -z "$1" ]; then echo "master"; else echo "$1" ; fi`
 PID=$(sudo docker run -itd -v $(pwd):/repo -v $(pwd)/.build:/build $IMAGE /bin/sh)
 echo "build squawk-www tag:$TAG, image:$PID"
 

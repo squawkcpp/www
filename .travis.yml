@@ -6,12 +6,11 @@ env:
   global:
     - secure: "gMIZ9+GDpaVmUi7CwSiwWPDBUfpcMfO4z5ABZtef1s9nSemjIQVdX2SZWyAyILZv7r37rvo5xPP/ZADjjME1hRBLrA5Q8qJz5nUieAkyJr7t0VNSH0znOxyK9v0XbPUAa/IcMCAbRrXnJ37hczZVbxvX5Y5xFFy10LXVV5E0nr8cQOqR5QLfrCLHRXPxO7jk1Jzr3r16BQ4L4PWB+KEVOukR9tCjWCzLivCrWt9hIbk59ChJR9d0eE02Kig9hWBW1fUylQ8jLF5nRi+3dFeBo0h7jDSP+2OiRpQRdbi2L6C8AV/mH1f/Oj7H+9JbA5qp0AGfh70nqro9ikKf+1DEA3Km6+ZKiR6Ak8FiL54FkyUhwTuyoRvi1uBl/gipcHq1clpkjXPYdS6CI9QbzKdxh1fwgIW62bF9ntb6igrObxpIVO7BfoUf5glJlqGyNj5teicvBTxRYvRv+hTWMNwFkWeRUp/xZ2XiaEd/TPVPxDJeiYvUJ+N54QUAhYTpFmUeDYg2pHDYVma5DMFk2TRHAHqcE88eilcOxtVHkrPyroVZ+jW1EN+cFGs/BMqJkrN4bt3SOcJv+n/RyfvGD0CBM4vj6JOZSvpA2bysPuyx+7DTwemOxAYXJLRgbOucPcqwmzRcvzxQa2H2Zql7gOlcBHwguVevX0bznpMldAK4Nyw=" # DOCKER_USER
     - secure: "b7bKT8JzBTiQzIYo05zffrOYjTQKIG4jC5G5HemCZxTSj1x5Sl6H1Z7LcxTyv/LwRcsvchppO8y3xoESr+PUkP9FbQoGf3gJ+x++h1EHEIouKM1JH/tMHPlT37B0CreIeUCPxVsXBTJDvkbnspJRm7WkwOOJLw9lohG6tpS9J37IdFqekM46VvKCpLJ2vPsTcsbXESpj17/xXGrN26RI3aB67GBxwl18lI+7kWezIj0u/sMUGRzmIVNNoGnKtV7m2Xro2/Dh9diNNGZgYPnG+a4hi3Z+Y/hM5b1utMOCF1dj43b+ESP2S1uyJkt4jN5tV6HU03vDgl29jSC+rThUqYOtuflFeLJtdMskVy6qjx7OWTKm1C+WApj7PxpYAOj1xLlpJGxDlViAuWWEJqVQW5BRE17mXf0Xq4qeFBDbIiIoAzbIxN1cSVqOwnh8PY/an1qpcpfXZIBn3blO2M7gvh4UIKEUSVLLEArfODWbJu7TF8FnapSNv/l+TQl0qepUzLZPzmGG5QvDGlm4sZ90BApJRud0k5icGVt5q/IRHo3h3tuSS2bRwnWod0WPcO8BWDQxOQZc+2qDhWwqFBpllXxpZaUhPocl/vgRDSr3RwVwlnlCVwcEUquhjszqra7lI4gBxeC6K6L4oMVXD42FgrUuOdXbjoTDANBeDX1Ekgk=" # DOCKER_PASS
-    - COMMIT=${TRAVIS_COMMIT::8}
+  - COMMIT=${TRAVIS_COMMIT::8}
 before_install:
-  - sudo git clone https://github.com/squawkcpp/www.git /repo
+   - sudo git clone https://github.com/squawkcpp/www.git /repo
 script:
-  sudo /bin/bash -c "cd /repo && /bin/bash build.sh $BINTRAY_KEY $TRAVIS_BRANCH"
-
+  - sudo /bin/bash -c "cd /repo && /bin/bash build.sh $TRAVIS_BRANCH"
 deploy:
   provider: releases
   api_key:
