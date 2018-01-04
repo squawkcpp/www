@@ -9,7 +9,7 @@ echo "build squawk-www tag:$TAG, image:$PID"
 
 DOCKER_EXEC="sudo docker exec $PID /bin/sh -c"
 
-$DOCKER_EXEC "cd build && conan install /repo --build=missing -s compiler.libcxx=libstdc++11"
+$DOCKER_EXEC "cd build && conan install /repo --build=missing"
 $DOCKER_EXEC "cmake -H/repo -B/build -G Ninja -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja -DWWW_TAG_VERSION=$TAG"
 $DOCKER_EXEC "cmake --build /build"
 $DOCKER_EXEC "cmake --build /build --target package"

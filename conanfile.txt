@@ -1,6 +1,6 @@
 [requires]
 Asio/1.11.0@bincrafters/stable
-Re2/latest@conan-cpp/stable
+Re2/master@conan-cpp/latest
 cxxopts/master@signal9/stable
 lightningcpp/master@conan-cpp/latest 
 
