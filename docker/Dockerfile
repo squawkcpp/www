@@ -3,7 +3,7 @@ FROM busybox:musl
 
 ARG WWW_TAG_VERSION=master
 
-ADD lightning/.build/squawk-www_$WWW_TAG_VERSION.tar.gz /
+ADD .build/squawk-www_$WWW_TAG_VERSION.tar.gz /
 
 ADD docker/www.sh /www.sh
 RUN chmod +x /*.sh

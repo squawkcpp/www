@@ -23,6 +23,7 @@ deploy:
     repo: squawkcpp/www
 
 after_success:
+  - cd /.build
   - sudo docker login -u $DOCKER_USER -p $DOCKER_PASS
   - export REPO=squawk/www
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
