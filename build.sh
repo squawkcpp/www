@@ -14,4 +14,4 @@ $DOCKER_EXEC "cmake -H/repo -B/.build -G Ninja -DCMAKE_MAKE_PROGRAM=/usr/bin/nin
 $DOCKER_EXEC "cmake --build /.build"
 $DOCKER_EXEC "cmake --build /.build --target package"
 
-sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=$TAG -t squawk-www .
+sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=$TAG -t www .
