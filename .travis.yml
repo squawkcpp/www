@@ -31,4 +31,5 @@ after_success:
   - sudo docker tag $REPO:$COMMIT $REPO:$TAG
   - sudo docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
   - sudo docker push $REPO
+  - cd -
 

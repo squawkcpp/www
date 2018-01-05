@@ -15,3 +15,5 @@ $DOCKER_EXEC "cmake --build /.build"
 $DOCKER_EXEC "cmake --build /.build --target package"
 
 sudo docker build -f docker/Dockerfile --build-arg WWW_TAG_VERSION=$TAG -t www .
+
+sudo docker rm -f $PID
